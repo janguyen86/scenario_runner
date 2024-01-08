@@ -11,7 +11,7 @@ RUN apt-get install -y git
 USER carla
 
 WORKDIR /home/carla
-RUN git clone https://github.com/janguyen86/scenario_runner.git
+RUN git clone https://github.com/janguyen86/scenario_runner.git --branch test
 
 WORKDIR /home/carla/scenario_runner
 RUN git checkout tags/v0.9.13

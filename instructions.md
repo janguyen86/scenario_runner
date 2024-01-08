@@ -1,16 +1,42 @@
-## Carla Docker Image 
+# Carla v0.9.15 (IP)
+
+## Carla Docker Image (v0.9.15)
 
 ```commandline
-sudo docker pull hangqiu/carla:0.9.13
+sudo docker build -t janice/carla:0.9.15 --file ./carla.Dockerfile .
 ```
 
-## Scenario Docker Image 
+## Run Carla v0.9.15 
+
+```commmandline 
+sudo docker run --privileged --gpus all --net=host -e DISPLAY=$DISPLAY \
+    -v /usr/share/vulkan/icd.d:/usr/share/vulkan/icd.d \
+    janice/carla:0.9.15 \
+    /bin/bash /opt/carla-simulator/CarlaUE4.sh
+```
+
+```commmandline 
+sudo docker run -it --privileged --gpus all --net=host -e DISPLAY=$DISPLAY \
+    -v /usr/share/vulkan/icd.d:/usr/share/vulkan/icd.d \
+    janice/carla:0.9.15 \
+    /bin/python3 /opt/carla-simulator/PythonAPI/examples/manual_control.py 
+```
+# Scenario Runner v0.9.13
+
+## Carla Docker Image (v0.9.13)
+For Carla v0.9.13 
 
 ```commandline
-sudo docker build -t hangqiu/srunner:0.9.13 --file ./srunner.Dockerfile .
+sudo docker pull hangqiu/srunner:0.9.13
 ```
 
-## Run Scenario Runner 
+## Scenario Docker Image (v0.9.13)
+
+```commandline
+sudo docker build -t janice/srunner:0.9.13 --file ./srunner.Dockerfile .
+```
+
+## Run Scenario Runner (v0.9.13)
 
 Start the carla server
 ```commandline
