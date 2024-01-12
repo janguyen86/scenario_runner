@@ -24,7 +24,6 @@ sudo docker run -it --privileged --gpus all --net=host -e DISPLAY=$DISPLAY \
 # Scenario Runner v0.9.13
 
 ## Carla Docker Image (v0.9.13)
-For Carla v0.9.13 
 
 ```commandline
 sudo docker pull hangqiu/srunner:0.9.13
@@ -33,7 +32,7 @@ sudo docker pull hangqiu/srunner:0.9.13
 ## Scenario Docker Image (v0.9.13)
 
 ```commandline
-sudo docker build -t janice/srunner:0.9.13 --file ./srunner13.Dockerfile .
+sudo docker build -t janice/srunner:0.9.13 --file ./srunner13.Dockerfile . --no-cache
 ```
 
 ## Run Scenario Runner for Multiple Ego Vehicles (v0.9.13)
