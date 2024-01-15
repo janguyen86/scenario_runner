@@ -3,7 +3,7 @@
 ## Carla Docker Image (v0.9.15)
 
 ```commandline
-sudo docker build -t janice/carla:0.9.15 --file ./carla.Dockerfile .
+sudo docker build -t janice/carla:0.9.15 --file ./carla15.Dockerfile .
 ```
 
 ## Run Carla v0.9.15 
@@ -24,7 +24,6 @@ sudo docker run -it --privileged --gpus all --net=host -e DISPLAY=$DISPLAY \
 # Scenario Runner v0.9.13
 
 ## Carla Docker Image (v0.9.13)
-For Carla v0.9.13 
 
 ```commandline
 sudo docker pull hangqiu/srunner:0.9.13
@@ -33,10 +32,10 @@ sudo docker pull hangqiu/srunner:0.9.13
 ## Scenario Docker Image (v0.9.13)
 
 ```commandline
-sudo docker build -t janice/srunner:0.9.13 --file ./srunner.Dockerfile .
+sudo docker build -t janice/srunner:0.9.13 --file ./srunner13.Dockerfile . --no-cache
 ```
 
-## Run Scenario Runner (v0.9.13)
+## Run Scenario Runner for Multiple Ego Vehicles (v0.9.13)
 
 Start the carla server
 ```commandline
