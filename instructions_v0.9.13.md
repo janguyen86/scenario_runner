@@ -1,26 +1,3 @@
-# Carla v0.9.15 (IP)
-
-## Carla Docker Image (v0.9.15)
-
-```commandline
-sudo docker build -t janice/carla:0.9.15 --file ./carla15.Dockerfile .
-```
-
-## Run Carla v0.9.15 
-
-```commmandline 
-sudo docker run --privileged --gpus all --net=host -e DISPLAY=$DISPLAY \
-    -v /usr/share/vulkan/icd.d:/usr/share/vulkan/icd.d \
-    janice/carla:0.9.15 \
-    /bin/bash /opt/carla-simulator/CarlaUE4.sh
-```
-
-```commmandline 
-sudo docker run -it --privileged --gpus all --net=host -e DISPLAY=$DISPLAY \
-    -v /usr/share/vulkan/icd.d:/usr/share/vulkan/icd.d \
-    janice/carla:0.9.15 \
-    /bin/python3 /opt/carla-simulator/PythonAPI/examples/manual_control.py 
-```
 # Scenario Runner v0.9.13
 
 ## Carla Docker Image (v0.9.13)
@@ -50,22 +27,23 @@ Run multi-ego vehicle scenario runner
 sudo docker run -it --privileged --gpus all --net=host -e DISPLAY=$DISPLAY \
     -v /usr/share/vulkan/icd.d:/usr/share/vulkan/icd.d  \
     janice/srunner:0.9.13  \
-    /bin/python3 scenario_runner.py --scenario FollowLeadingVehicle_11_multi --reloadWorld
+    /bin/python3 scenario_runner.py --scenario MultiEgo_1 --reloadWorld
 ```
+
 Starting manual control agent for each ego vehicle 
 
-Hero0
+Hero
  ```commandline 
  sudo docker run -it --privileged --gpus all --net=host -e DISPLAY=$DISPLAY \
     -v /usr/share/vulkan/icd.d:/usr/share/vulkan/icd.d \
     hangqiu/srunner:0.9.13 \
-    /bin/python3 manual_control.py --rolename hero0
+    /bin/python3 manual_control.py --rolename hero
  ```
 
- Hero1
+ Hero2
  ```commandline 
  sudo docker run -it --privileged --gpus all --net=host -e DISPLAY=$DISPLAY \
     -v /usr/share/vulkan/icd.d:/usr/share/vulkan/icd.d \
     hangqiu/srunner:0.9.13 \
-    /bin/python3 manual_control.py --rolename hero1
+    /bin/python3 manual_control.py --rolename hero2
  ```
