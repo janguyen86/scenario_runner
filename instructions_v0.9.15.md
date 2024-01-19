@@ -9,6 +9,11 @@ sudo docker pull carlasim/carla:0.9.15
 ```commandline
 sudo docker run --privileged --gpus all --net=host -e DISPLAY=$DISPLAY carlasim/carla:0.9.15 /bin/bash ./CarlaUE4.sh
 ```
+## Install Correct Verision 
+
+```commandline 
+python3 -m pip install -r requirements.txt
+```
 
 ## Run Multi-Ego Vehicle Scenario Runner natively
 
