@@ -1,4 +1,4 @@
-# Instructions to Run Scenario Runner v0.9.15 Natively 
+# Instructions to Run Scenario Runner with Local Carla Data Provider 
 
 ## Build the Carla docker image
 ```commandline 
@@ -19,7 +19,7 @@ python3 -m pip install -r requirements.txt
 
 Run a scenario
 ```commandline
-python3 scenario_runner.py --scenario MultiEgo_1 --reloadWorld
+python3 scenario_runner_local.py --scenario MultiEgo_1 --reloadWorld
 ```
 
 Start manual control agent for each ego vehicle
@@ -30,3 +30,14 @@ python3 manual_control.py --rolename hero
 ```commandline 
 python3 manual_control.py --rolename hero2
 ```
+
+
+# New Files added 
+
+/srunner/autoagents/agent_sensor.py 
+
+/srunner/examples/agent_sensor.xml
+
+/scenariomanager/scenario_manager_local.py 
+
+/scenario_runner_local.py 
