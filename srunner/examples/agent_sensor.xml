@@ -1,0 +1,4 @@
+scenarioname: "Agent Sensor"
+map: "Town2"
+vehicles: 
+    -name: "hero0"
