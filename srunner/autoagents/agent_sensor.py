@@ -5,7 +5,7 @@ import carla
 from srunner.autoagents.sensor_interface import SensorInterface
 from srunner.scenariomanager.timer import GameTime
 from srunner.tools.route_manipulation import downsample_route
-from agent_wrapper import * 
+from agent_wrapper import setup_sensors
 from srunner.autoagents.autonomous_agent import AutonomousAgent
 
 class AgentSensor(AutonomousAgent):
@@ -28,3 +28,4 @@ class AgentSensor(AutonomousAgent):
         #TODO: output agent's sensor data 
         sensor_data = self.sensor_interface.get_data()
         agent.setup_sensors(self.vehicle)
+        return sensor_data
