@@ -1,4 +1,6 @@
-scenarioname: "Agent Sensor"
-map: "Town2"
-vehicles: 
-    -name: "hero0"
+<?xml version="1.0"?>
+<scenarios>
+    <scenario name="Agent Sensor" type="FreeRide" town="Town01">
+        <ego_vehicle x="312" y="129" z="0" yaw="180" model="vehicle.tesla.model3" rolename="hero"/>
+    </scenario>
+</scenarios>
