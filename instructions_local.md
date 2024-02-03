@@ -19,7 +19,12 @@ python3 -m pip install -r requirements.txt
 
 Run a scenario
 ```commandline
-python3 scenario_runner_local.py --scenario MultiEgo_1 --reloadWorld
+python3 scenario_runner_local.py /scenario_runner/srunner/routes_debug.xml scenario_runner/srunner/data/all_towns_traffic_scenarios1_3_4.json 0 --agent srunner/autoagents/agent_sensor.py
+```
+
+Ex Route Scenario 
+```commandline 
+python scenario_runner.py --route /scenario_runner/srunner/routes_debug.xml /scenario_runner/srunner/data/all_towns_traffic_scenarios1_3_4.json 0 --agent srunner/autoagents/npc_agent.py
 ```
 
 Start manual control agent for each ego vehicle

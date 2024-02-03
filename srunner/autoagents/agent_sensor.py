@@ -3,10 +3,9 @@ from __future__ import print_function
 import carla
 
 from srunner.autoagents.sensor_interface import SensorInterface
-from srunner.scenariomanager.timer import GameTime
-from srunner.tools.route_manipulation import downsample_route
-from agent_wrapper import setup_sensors
+from agent_wrapper import AgentWrapper
 from srunner.autoagents.autonomous_agent import AutonomousAgent
+from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 
 class AgentSensor(AutonomousAgent):
     _sensors = None 
@@ -19,13 +18,31 @@ class AgentSensor(AutonomousAgent):
         self.sensor_interface = SensorInterface()
         self.vehicle = vehicle
         self.debug_mode = debug_mode
-    
+        self.data_provider = None 
+
     @staticmethod
     def get_sensors():
+        """
+        Get agent's sensors. 
+        """
         return AgentSensor._sensors
     
+    #TODO: Create local CarlaDataProvider 
+    def get_data_provider(self): 
+        """
+        Create local CarlaDataProvider
+        """
+        self.data_provider = CarlaDataProvider() 
+
+    #TODO: Create local setup_sensor called once at beginning of scenario 
+    def setup_sensors(self, agent):
+        agent.AgentWrapper.setup_sensors_local()
+
+    #TODO: run_step run at every step 
     def run_step(self, agent):
-        #TODO: output agent's sensor data 
+        """
+        Take sensor and output action. 
+        """
+        #set up CallBack 
         sensor_data = self.sensor_interface.get_data()
-        agent.setup_sensors(self.vehicle)
         return sensor_data
