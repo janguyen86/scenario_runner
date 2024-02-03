@@ -38,11 +38,10 @@ class AgentSensor(AutonomousAgent):
     def setup_sensors(self, agent):
         agent.AgentWrapper.setup_sensors_local()
 
-    #TODO: run_step run at every step 
-    def run_step(self, agent):
+    #TODO: Execute run_step at every step
+    def run_step(self):
         """
         Take sensor and output action. 
         """
-        #set up CallBack 
         sensor_data = self.sensor_interface.get_data()
         return sensor_data
