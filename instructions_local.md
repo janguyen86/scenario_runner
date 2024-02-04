@@ -5,43 +5,46 @@
 sudo docker pull carlasim/carla:0.9.15 
 ```
 
-## Run Carla server on Docker 
-```commandline
-sudo docker run --privileged --gpus all --net=host -e DISPLAY=$DISPLAY carlasim/carla:0.9.15 /bin/bash ./CarlaUE4.sh
-```
 ## Install Correct Verision of Python Packages
 
 ```commandline 
 python3 -m pip install -r requirements.txt
 ```
 
-## Run Multi-Ego Vehicle Scenario Runner natively
-
-Run a scenario
+## Run Carla server on Docker 
 ```commandline
-python3 scenario_runner_local.py /scenario_runner/srunner/routes_debug.xml scenario_runner/srunner/data/all_towns_traffic_scenarios1_3_4.json 0 --agent srunner/autoagents/agent_sensor.py
+sudo docker run --privileged --gpus all --net=host -e DISPLAY=$DISPLAY carlasim/carla:0.9.15 /bin/bash ./CarlaUE4.sh
 ```
 
-Ex Route Scenario 
+## Run Route Scenario 
+
+### Example Route Scenario 
+Run route scenario
 ```commandline 
-python scenario_runner.py --route /scenario_runner/srunner/routes_debug.xml /scenario_runner/srunner/data/all_towns_traffic_scenarios1_3_4.json 0 --agent srunner/autoagents/npc_agent.py
+python scenario_runner.py --route /home/janice/scenario_runner/srunner/data/routes_town10.xml --route-id 0 --agent srunner/autoagents/npc_agent.py
 ```
 
-Start manual control agent for each ego vehicle
+Start manual control agent 
 ```commandline 
-python3 manual_control.py --rolename hero
+python3 manual_control.py 
 ```
 
+### Sensor Agent 
+Run route scenario
 ```commandline 
-python3 manual_control.py --rolename hero2
+python scenario_runner_local.py --route /home/janice/scenario_runner/srunner/data/routes_town10.xml --route-id 0 --agent srunner/autoagents/agent_sensor.py
 ```
 
+Start manual control agent 
+```commandline 
+python3 manual_control.py 
+```
 
 # New Files added 
 
 /srunner/autoagents/agent_sensor.py 
 
-/srunner/examples/agent_sensor.xml
+/srunner/examples/agent_sensor.xml (incomplete)
 
 /scenariomanager/scenario_manager_local.py 
 

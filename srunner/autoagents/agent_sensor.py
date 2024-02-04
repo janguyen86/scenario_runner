@@ -10,12 +10,12 @@ from srunner.autoagents.sensor_interface import CallBack
 
 class AgentSensor(AutonomousAgent):
     _sensors = None 
+    _agent = None 
     
     def __init__(self,
                  vehicle,
-                 agent_config,
                  debug_mode=False):
-        self.agent_id = agent_config.name
+        # self.agent_id = agent_config.name
         self.sensor_interface = SensorInterface()
         self.vehicle = vehicle
         self.debug_mode = debug_mode
@@ -89,9 +89,10 @@ class AgentSensor(AutonomousAgent):
         agent.setup_sensors_local()
 
     #TODO: Execute run_step at every step
-    def run_step(self):
+    def run_step(self, input_data, timestamp):
         """
         Take sensor and output action. 
         """
+        control = carla.VehicleControl()
         sensor_data = self.sensor_interface.get_data()
-        return sensor_data
+        return control
