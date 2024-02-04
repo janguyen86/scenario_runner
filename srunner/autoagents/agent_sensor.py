@@ -27,16 +27,13 @@ class AgentSensor(AutonomousAgent):
         Get agent's sensors. 
         """
         return AgentSensor._sensors
-    
-    
-    #TODO: Create local CarlaDataProvider 
+
     def get_data_provider(self): 
         """
         Create local CarlaDataProvider
         """
         self.data_provider = CarlaDataProvider() 
 
-    #TODO: Rewrite this function to listen to new call back that reads local self._agent; call local cache and replace 3rd parameter
     def setup_sensors_local(self, vehicle, agent, debug_mode=False):
         """
         Create the sensors defined by the user and attach them to the ego-vehicle
@@ -83,8 +80,6 @@ class AgentSensor(AutonomousAgent):
         # Tick once to spawn the sensors
         self.data_provider .get_world().tick()
     
-   
-    #TODO: Create local setup_sensor called once at beginning of scenario 
     def setup_sensors(self, agent):
         agent.setup_sensors_local()
 
