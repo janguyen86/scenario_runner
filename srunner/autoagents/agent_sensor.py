@@ -3,30 +3,29 @@ from __future__ import print_function
 import carla
 
 from srunner.autoagents.sensor_interface import SensorInterface
-from agent_wrapper import AgentWrapper
+# from srunner.autoagents.agent_wrapper import AgentWrapper
 from srunner.autoagents.autonomous_agent import AutonomousAgent
 from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 from srunner.autoagents.sensor_interface import CallBack
 
 class AgentSensor(AutonomousAgent):
-    _sensors = None 
-    _agent = None 
-    
+      
     def __init__(self,
-                 vehicle,
                  debug_mode=False):
-        # self.agent_id = agent_config.name
+        self._agent = None 
+        self._vehicle = None 
         self.sensor_interface = SensorInterface()
-        self.vehicle = vehicle
         self.debug_mode = debug_mode
         self.data_provider = None 
 
-    @staticmethod
-    def get_sensors():
-        """
-        Get agent's sensors. 
-        """
-        return AgentSensor._sensors
+
+    # @staticmethod
+    # def get_sensors(self):
+    #     """
+    #     Get agent's sensors. 
+    #     """
+    #     return AgentSensor._sensors
+
 
     def get_data_provider(self): 
         """
@@ -34,13 +33,15 @@ class AgentSensor(AutonomousAgent):
         """
         self.data_provider = CarlaDataProvider() 
 
+
     def setup_sensors_local(self, vehicle, agent, debug_mode=False):
         """
         Create the sensors defined by the user and attach them to the ego-vehicle
         :param vehicle: ego vehicle
         :return:
         """
-        bp_library = self.data_provider .get_world().get_blueprint_library()
+        bp_library = self.data_provider.get_world().get_blueprint_library()
+        print(self._agent)
         for sensor_spec in self._agent.sensors():
             # These are the sensors spawned on the carla world
             bp = bp_library.find(str(sensor_spec['type']))
@@ -72,16 +73,18 @@ class AgentSensor(AutonomousAgent):
 
             # create sensor
             sensor_transform = carla.Transform(sensor_location, sensor_rotation)
-            sensor = self.data_provider .get_world().spawn_actor(bp, sensor_transform, vehicle)
+            sensor = self.data_provider.get_world().spawn_actor(bp, sensor_transform, vehicle)
             # setup callback
             sensor.listen(CallBack(sensor_spec['id'], sensor, agent.sensor_interface))
             self._sensors_list.append(sensor)
-        
-        # Tick once to spawn the sensors
-        self.data_provider .get_world().tick()
-    
-    def setup_sensors(self, agent):
-        agent.setup_sensors_local()
+
+
+    def setup_sensors(self, vehicle, agent):
+        self.get_data_provider()
+        self._agent = agent 
+        self._vehicle = vehicle
+        self.setup_sensors_local(vehicle, agent)
+
 
     #TODO: Execute run_step at every step
     def run_step(self, input_data, timestamp):

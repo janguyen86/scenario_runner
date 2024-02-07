@@ -21,6 +21,7 @@ from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 from srunner.scenariomanager.result_writer import ResultOutputProvider
 from srunner.scenariomanager.timer import GameTime
 from srunner.scenariomanager.watchdog import Watchdog
+from srunner.autoagents.agent_sensor import AgentSensor
 
 
 class ScenarioManager(object):
@@ -106,12 +107,7 @@ class ScenarioManager(object):
         self.scenario_tree = self.scenario.scenario_tree
         self.ego_vehicles = scenario.ego_vehicles
         self.other_actors = scenario.other_actors
-
-        # To print the scenario tree uncomment the next line
-        # py_trees.display.render_dot_tree(self.scenario_tree)
-
-        # if self._agent is not None:
-        #     self._agent.setup_sensors(self.ego_vehicles[0], self._debug_mode)
+        AgentSensor().setup_sensors(self.ego_vehicles[0], self._agent)
 
     def run_scenario(self):
         """
