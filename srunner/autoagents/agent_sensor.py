@@ -20,14 +20,40 @@ class AgentSensor(AutonomousAgent):
         self.sensor_interface = SensorInterface()
         self.debug_mode = debug_mode
         self.data_provider = None 
-        # AgentSensor.setup_sensors()
+        
     
+    def sensors(self):
+        """
+        Define the sensor suite required by the agent
+
+        :return: a list containing the required sensors in the following format:
+
+        [
+            {'type': 'sensor.camera.rgb', 'x': 0.7, 'y': -0.4, 'z': 1.60, 'roll': 0.0, 'pitch': 0.0, 'yaw': 0.0,
+                      'width': 300, 'height': 200, 'fov': 100, 'id': 'Left'},
+
+            {'type': 'sensor.camera.rgb', 'x': 0.7, 'y': 0.4, 'z': 1.60, 'roll': 0.0, 'pitch': 0.0, 'yaw': 0.0,
+                      'width': 300, 'height': 200, 'fov': 100, 'id': 'Right'},
+
+            {'type': 'sensor.lidar.ray_cast', 'x': 0.7, 'y': 0.0, 'z': 1.60, 'yaw': 0.0, 'pitch': 0.0, 'roll': 0.0,
+             'id': 'LIDAR'}
+        ]
+        """
+
+        sensors = [
+            {'type': 'sensor.camera.rgb', 'x': 0.7, 'y': -0.4, 'z': 1.60, 'roll': 0.0, 'pitch': 0.0, 'yaw': 0.0,
+             'width': 300, 'height': 200, 'fov': 100, 'id': 'Left'},
+             {'type': 'sensor.other.gnss', 'x': 0.7, 'y': -0.4, 'z': 1.60, 'id': 'GPS'}
+        ]
+
+        return sensors
+  
 
     def get_sensors(self):
         """
         Get agent's sensors. 
         """
-        self._sensors = AgentSensor._sensors
+        return AgentSensor.sensors()
 
 
     def get_data_provider(self): 
@@ -43,7 +69,7 @@ class AgentSensor(AutonomousAgent):
         :param vehicle: ego vehicle
         :return:
         """
-        self.get_sensors()
+        self._sensors = self.get_sensors()
         bp_library = self.data_provider.get_world().get_blueprint_library()
         print(self._agent)
         for sensor_spec in self._sensors():
