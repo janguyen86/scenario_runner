@@ -107,7 +107,6 @@ class ScenarioManager(object):
         self.scenario_tree = self.scenario.scenario_tree
         self.ego_vehicles = scenario.ego_vehicles
         self.other_actors = scenario.other_actors
-        AgentSensor().setup_sensors(self.ego_vehicles[0], self._agent)
 
     def run_scenario(self):
         """

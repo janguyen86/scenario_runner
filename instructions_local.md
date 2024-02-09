@@ -29,7 +29,7 @@ Start manual control agent
 python3 manual_control.py 
 ```
 
-### Sensor Agent 
+### Single Sensor Agent 
 Run route scenario
 ```commandline 
 python scenario_runner_local.py --route /home/janice/scenario_runner/srunner/data/routes_town10.xml --route-id 0 --agent srunner/autoagents/agent_sensor.py
@@ -38,6 +38,21 @@ python scenario_runner_local.py --route /home/janice/scenario_runner/srunner/dat
 Start manual control agent 
 ```commandline 
 python3 manual_control.py 
+```
+
+### Multiple Sensor Agent 
+Run route scenario
+```commandline 
+python scenario_runner_local.py --route /home/janice/scenario_runner/srunner/data/examples/AgentSensor.xml --route-id 0 --agent srunner/autoagents/agent_sensor.py
+```
+
+Start manual control agent for each ego vehicle 
+```commandline 
+python3 manual_control.py --rolename hero
+```
+
+```commandline 
+python3 manual_control.py --rolename hero2
 ```
 
 # New Files added 

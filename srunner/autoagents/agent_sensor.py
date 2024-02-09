@@ -3,7 +3,7 @@ from __future__ import print_function
 import carla
 
 from srunner.autoagents.sensor_interface import SensorInterface
-# from srunner.autoagents.agent_wrapper import AgentWrapper
+from srunner.autoagents.agent_wrapper import AgentWrapper
 from srunner.autoagents.autonomous_agent import AutonomousAgent
 from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 from srunner.autoagents.sensor_interface import CallBack
@@ -20,14 +20,14 @@ class AgentSensor(AutonomousAgent):
         self.sensor_interface = SensorInterface()
         self.debug_mode = debug_mode
         self.data_provider = None 
+        # AgentSensor.setup_sensors()
     
 
-    # @staticmethod
     def get_sensors(self):
         """
         Get agent's sensors. 
         """
-        self._sensors = self._agent._sensors
+        self._sensors = AgentSensor._sensors
 
 
     def get_data_provider(self): 
@@ -46,7 +46,7 @@ class AgentSensor(AutonomousAgent):
         self.get_sensors()
         bp_library = self.data_provider.get_world().get_blueprint_library()
         print(self._agent)
-        for sensor_spec in self.sensors():
+        for sensor_spec in self._sensors():
             # These are the sensors spawned on the carla world
             bp = bp_library.find(str(sensor_spec['type']))
             if sensor_spec['type'].startswith('sensor.camera'):
