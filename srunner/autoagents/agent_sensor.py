@@ -3,7 +3,6 @@ from __future__ import print_function
 import carla
 
 from srunner.autoagents.sensor_interface import SensorInterface
-from srunner.autoagents.agent_wrapper import AgentWrapper
 from srunner.autoagents.autonomous_agent import AutonomousAgent
 from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 from srunner.autoagents.sensor_interface import CallBack
@@ -14,7 +13,6 @@ class AgentSensor(AutonomousAgent):
 
     def __init__(self,
                  debug_mode=False):
-        self._agent = None 
         self._sensors = None
         self._vehicle = None 
         self.sensor_interface = SensorInterface()
@@ -63,7 +61,7 @@ class AgentSensor(AutonomousAgent):
         self.data_provider = CarlaDataProvider() 
 
 
-    def setup_sensors_local(self, vehicle, agent, debug_mode=False):
+    def setup_sensors_local(self, vehicle, debug_mode=False):
         """
         Create the sensors defined by the user and attach them to the ego-vehicle
         :param vehicle: ego vehicle
@@ -71,7 +69,6 @@ class AgentSensor(AutonomousAgent):
         """
         self._sensors = self.get_sensors()
         bp_library = self.data_provider.get_world().get_blueprint_library()
-        print(self._agent)
         for sensor_spec in self._sensors():
             # These are the sensors spawned on the carla world
             bp = bp_library.find(str(sensor_spec['type']))
@@ -105,15 +102,14 @@ class AgentSensor(AutonomousAgent):
             sensor_transform = carla.Transform(sensor_location, sensor_rotation)
             sensor = self.data_provider.get_world().spawn_actor(bp, sensor_transform, vehicle)
             # setup callback
-            sensor.listen(CallBack(sensor_spec['id'], sensor, agent.sensor_interface))
+            sensor.listen(CallBack(sensor_spec['id'], sensor, self.sensor_interface))
             self._sensors_list.append(sensor)
 
 
-    def setup_sensors(self, vehicle, agent):
+    def setup_sensors(self, vehicle):
         self.get_data_provider()
-        self._agent = agent 
         self._vehicle = vehicle
-        self.setup_sensors_local(vehicle, agent)
+        self.setup_sensors_local(vehicle)
 
 
     #TODO: Execute run_step at every step
