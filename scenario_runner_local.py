@@ -36,9 +36,9 @@ from srunner.scenarioconfigs.openscenario_configuration import OpenScenarioConfi
 from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 from srunner.scenariomanager.scenario_manager_local import ScenarioManager
 from srunner.scenarios.open_scenario import OpenScenario
-from srunner.scenarios.route_scenario import RouteScenario
+from srunner.scenarios.route_scenario_local import RouteScenario
 from srunner.tools.scenario_parser import ScenarioConfigurationParser
-from srunner.tools.route_parser import RouteParser
+from srunner.tools.route_parser_local import RouteParser
 from srunner.tools.osc2_helper import OSC2Helper
 from srunner.scenarios.osc2_scenario import OSC2Scenario
 from srunner.scenarioconfigs.osc2_scenario_configuration import OSC2ScenarioConfiguration
