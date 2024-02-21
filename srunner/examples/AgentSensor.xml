@@ -17,10 +17,10 @@
          <position x="-0.8" y="13.2" z="0.0"/>
       </waypoints>
       <scenarios>
-         <ego_vehicle x="207" y="59" z="0" yaw="180" model="vehicle.lincoln.mkz_2017" rolename="hero" agent="srunner/autoagents/agent_sensor.py"/>
-         <ego_vehicle x="237" y="-95.0754252474" z="0" yaw="90" model="vehicle.tesla.model3" rolename="hero2" agent="srunner/autoagents/huamn_agent.py"/>
          <scenario name="ControlLoss_1" type="ControlLoss">
             <trigger_point x="71.0" y="66.3" z="0.0" yaw="-179.9"/>
+            <ego_vehicle x="207" y="59" z="0" yaw="180" model="vehicle.lincoln.mkz_2017" rolename="hero" agent="srunner/autoagents/agent_sensor.py"/>
+            <ego_vehicle x="237" y="-95.0754252474" z="0" yaw="90" model="vehicle.tesla.model3" rolename="hero2" agent="srunner/autoagents/huamn_agent.py"/>
          </scenario>
          <scenario name="ControlLoss_2" type="ControlLoss">
             <trigger_point x="19.4" y="66.3" z="0.0" yaw="-179.9"/>

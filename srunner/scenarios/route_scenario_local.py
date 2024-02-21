@@ -58,7 +58,7 @@ class RouteScenario(BasicScenario):
     along which several smaller scenarios are triggered
     """
 
-    def __init__(self, world, config, debug_mode=False, criteria_enable=True, timeout=300):
+    def __init__(self, world, ego_vehicles, config, debug_mode=False, criteria_enable=True, timeout=300):
         """
         Setup all relevant parameters and create scenarios along route
         """
@@ -67,18 +67,19 @@ class RouteScenario(BasicScenario):
         self.route = self._get_route(config)
         sampled_scenario_definitions = self._filter_scenarios(config.scenario_configs)
 
-        ego_vehicle = self._spawn_ego_vehicle()
+        self.ego_vehicles = []
+        self._spawn_ego_vehicle(ego_vehicles)
         self.timeout = self._estimate_route_timeout()
 
         if debug_mode:
             self._draw_waypoints(world, self.route, vertical_shift=0.1, size=0.1, persistency=self.timeout, downsample=5)
 
         self._build_scenarios(
-            world, ego_vehicle, sampled_scenario_definitions, timeout=self.timeout, debug=debug_mode > 0
+            world, self.ego_vehicles, sampled_scenario_definitions, timeout=self.timeout, debug=debug_mode > 0
         )
 
         super(RouteScenario, self).__init__(
-            config.name, [ego_vehicle], config, world, debug_mode > 1, False, criteria_enable
+            config.name, self.ego_vehicles, config, world, debug_mode > 1, False, criteria_enable
         )
 
     def _get_route(self, config):
@@ -117,16 +118,17 @@ class RouteScenario(BasicScenario):
 
         return new_scenarios_config
 
-    def _spawn_ego_vehicle(self):
+    def _spawn_ego_vehicle(self, ego_vehicles):
         """Spawn the ego vehicle at the first waypoint of the route"""
-        elevate_transform = self.route[0][0]
-        elevate_transform.location.z += 0.5
 
-        ego_vehicle = CarlaDataProvider.request_new_actor('vehicle.lincoln.mkz_2017',
-                                                          elevate_transform,
-                                                          rolename='hero')
+        for vehicle in ego_vehicles:
+                self.ego_vehicles.append(CarlaDataProvider.request_new_actor(vehicle.model,
+                                                                             vehicle.transform,
+                                                                             vehicle.rolename,
+                                                                             random_location=vehicle.random_location,
+                                                                             color=vehicle.color,
+                                                                             actor_category=vehicle.category))
 
-        return ego_vehicle
 
     def _estimate_route_timeout(self):
         """
@@ -205,14 +207,17 @@ class RouteScenario(BasicScenario):
 
         return all_scenario_classes
 
-    def _build_scenarios(self, world, ego_vehicle, scenario_definitions, scenarios_per_tick=5, timeout=300, debug=False):
+    def _build_scenarios(self, world, ego_vehicles, scenario_definitions, scenarios_per_tick=5, timeout=300, debug=False):
         """
         Initializes the class of all the scenarios that will be present in the route.
         If a class fails to be initialized, a warning is printed but the route execution isn't stopped
         """
         all_scenario_classes = self.get_all_scenario_classes()
         self.list_scenarios = []
-        ego_data = ActorConfigurationData(ego_vehicle.type_id, ego_vehicle.get_transform(), 'hero')
+        ego_data = []
+
+        for vehicle in ego_vehicles:
+            ego_data.apend(ActorConfigurationData(vehicle.type_id, vehicle.get_transform(), 'hero'))
 
         if debug:
             tmap = CarlaDataProvider.get_map()
@@ -224,7 +229,7 @@ class RouteScenario(BasicScenario):
                                         color=carla.Color(0, 0, 128), life_time=timeout, persistent_lines=True)
 
         for scenario_number, scenario_config in enumerate(scenario_definitions):
-            scenario_config.ego_vehicles = [ego_data]
+            scenario_config.ego_vehicles = ego_data
             scenario_config.route_var_name = "ScenarioRouteNumber{}".format(scenario_number)
             scenario_config.route = self.route
 

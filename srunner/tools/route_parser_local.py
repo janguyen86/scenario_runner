@@ -85,6 +85,9 @@ class RouteParser(object):
                         scenario_config.trigger_points.append(convert_elem_to_transform(elem))
                     elif elem.tag == 'other_actor':
                         scenario_config.other_actors.append(ActorConfigurationData.parse_from_node(elem, 'scenario'))
+                    if elem.tag == 'ego_vehicle':
+                        scenario_config.ego_vehicles.append(ActorConfigurationData.parse_from_node(elem, 'hero'))
+                        scenario_config.trigger_points.append(scenario_config.ego_vehicles[-1].transform)
                     else:
                         scenario_config.other_parameters[elem.tag] = elem.attrib
 
