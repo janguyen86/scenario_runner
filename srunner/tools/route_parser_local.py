@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 
 import carla
 from agents.navigation.local_planner import RoadOption
-from srunner.scenarioconfigs.route_scenario_configuration import RouteScenarioConfiguration
+from srunner.scenarioconfigs.route_scenario_configuration_local import RouteScenarioConfiguration
 from srunner.scenarioconfigs.scenario_configuration import ScenarioConfiguration, ActorConfigurationData
 
 # Threshold to say if a scenarios trigger position is part of the route
@@ -54,6 +54,7 @@ class RouteParser(object):
 
         route_configs = []
         tree = ET.parse(route_filename)
+        
         for route in tree.iter("route"):
 
             route_id = route.attrib['id']
@@ -96,6 +97,10 @@ class RouteParser(object):
 
             route_configs.append(route_config)
 
+        #The list of ego vehicles that will be spawned 
+        for vehicle in tree.iter("ego_vehicle"): 
+           #TODO finish this function so that each vehicle has: agent, type 
+            
         return route_configs
 
     @staticmethod

@@ -43,7 +43,7 @@ python3 manual_control.py
 ### Multiple Sensor Agent 
 Run route scenario
 ```commandline 
-python scenario_runner_local.py --route /home/janice/scenario_runner/srunner/data/examples/AgentSensor.xml --route-id 0 --agent srunner/autoagents/agent_sensor.py
+python scenario_runner_local.py --route /home/janice/scenario_runner/srunner/examples/AgentSensor.xml --route-id 0 --agent srunner/autoagents/agent_sensor.py
 ```
 
 Start manual control agent for each ego vehicle 
