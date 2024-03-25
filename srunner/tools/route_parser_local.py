@@ -96,11 +96,6 @@ class RouteParser(object):
             route_config.scenario_configs = scenario_configs
 
             route_configs.append(route_config)
-
-        #The list of ego vehicles that will be spawned 
-        # for vehicle in tree.iter("ego_vehicle"): 
-        #    TODO finish this function so that each vehicle has: agent, type 
-            
         return route_configs
 
     @staticmethod

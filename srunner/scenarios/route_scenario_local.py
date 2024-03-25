@@ -129,7 +129,6 @@ class RouteScenario(BasicScenario):
                                                                              color=vehicle.color,
                                                                              actor_category=vehicle.category))
 
-
     def _estimate_route_timeout(self):
         """
         Estimate the duration of the route, as a proportinal value of its length

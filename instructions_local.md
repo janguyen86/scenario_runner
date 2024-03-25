@@ -64,3 +64,9 @@ python3 manual_control.py --rolename hero2
 /scenariomanager/scenario_manager_local.py 
 
 /scenario_runner_local.py 
+
+/sruuner/scenarios/route_scenario_local.py 
+
+/srunner/tools/route_parser_local.py
+
+/srunner/scenarioconfigs/route_scenario_configuration_local.py

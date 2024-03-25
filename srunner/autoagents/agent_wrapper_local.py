@@ -94,5 +94,16 @@ class AgentWrapper(object):
                 self._sensors_list[i].destroy()
                 self._sensors_list[i] = None
         self._sensors_list = []
+    
+    def _spawn_ego_vehicle(self, ego_vehicles):
+        """Spawn the ego vehicle at the first waypoint of the route"""
 
-#TODO add function spawn
+        list_ego_vehicles = []
+        for vehicle in ego_vehicles:
+                list_ego_vehicles.append(CarlaDataProvider.request_new_actor(vehicle.model,
+                                                                             vehicle.transform,
+                                                                             vehicle.rolename,
+                                                                             random_location=vehicle.random_location,
+                                                                             color=vehicle.color,
+                                                                             actor_category=vehicle.category))
+        return list_ego_vehicles
