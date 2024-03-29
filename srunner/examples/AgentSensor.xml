@@ -19,8 +19,8 @@
       <scenarios>
          <scenario name="FreeRide1" type="FreeRide">
             <trigger_point x="71.0" y="66.3" z="0.0" yaw="-179.9"/>
-            <ego_vehicle x="207" y="59" z="0" yaw="180" model="vehicle.lincoln.mkz_2017" rolename="hero" agent="srunner/autoagents/agent_sensor.py"/>
-            <ego_vehicle x="237" y="-95.0754252474" z="0" yaw="90" model="vehicle.tesla.model3" rolename="hero2" agent="srunner/autoagents/huamn_agent.py"/>
+            <ego_vehicle x="85.7" y="66.4" z="0.5" yaw="180" model="vehicle.lincoln.mkz_2017" rolename="hero" agent="srunner/autoagents/agent_sensor.py"/>
+            <ego_vehicle x="-2.8" y="66.2" z="0.5" yaw="90" model="vehicle.tesla.model3" rolename="hero2" agent="srunner/autoagents/huamn_agent.py"/>
          </scenario>
       </scenarios>
    </route>

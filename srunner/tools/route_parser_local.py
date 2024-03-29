@@ -54,7 +54,7 @@ class RouteParser(object):
 
         route_configs = []
         tree = ET.parse(route_filename)
-        
+        ego_vehicles = []
         for route in tree.iter("route"):
 
             route_id = route.attrib['id']
@@ -88,13 +88,12 @@ class RouteParser(object):
                         scenario_config.other_actors.append(ActorConfigurationData.parse_from_node(elem, 'scenario'))
                     if elem.tag == 'ego_vehicle':
                         scenario_config.ego_vehicles.append(ActorConfigurationData.parse_from_node(elem, 'hero'))
+                        route_config.ego_vehicles.append(ActorConfigurationData.parse_from_node(elem, 'hero'))
                         scenario_config.trigger_points.append(scenario_config.ego_vehicles[-1].transform)
                     else:
                         scenario_config.other_parameters[elem.tag] = elem.attrib
-
                 scenario_configs.append(scenario_config)
             route_config.scenario_configs = scenario_configs
-
             route_configs.append(route_config)
         return route_configs
 

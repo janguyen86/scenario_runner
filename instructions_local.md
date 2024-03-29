@@ -43,7 +43,7 @@ python3 manual_control.py
 ### Multiple Sensor Agent 
 Run route scenario
 ```commandline 
-python scenario_runner_local.py --route /home/janice/scenario_runner/srunner/examples/AgentSensor.xml --route-id 0 --agent srunner/autoagents/agent_sensor.py
+python scenario_runner_local.py --route /home/janice/scenario_runner/srunner/examples/AgentSensor.xml --route-id 0 --agent srunner/autoagents/npc_agent.py
 ```
 
 Start manual control agent for each ego vehicle 
@@ -54,6 +54,19 @@ python3 manual_control.py --rolename hero
 ```commandline 
 python3 manual_control.py --rolename hero2
 ```
+
+## Debugging Mode 
+ Run carla server 
+
+ ```commandline 
+ sudo docker run --privileged --gpus all --net=host -e DISPLAY=$DISPLAY carlasim/carla:0.9.15 /bin/bash ./CarlaUE4.sh
+ ```
+
+ Run debug mode with Arguements 
+ ```commandline
+ --route /home/janice/scenario_runner/srunner/examples/AgentSensor.xml --route-id 0 --agent srunner/autoagents/npc_agent.py
+ ```
+
 
 # New Files added 
 

@@ -63,6 +63,7 @@ class RouteScenario(BasicScenario):
         Setup all relevant parameters and create scenarios along route
         """
 
+        self.world = world 
         self.config = config
         self.route = self._get_route(config)
         sampled_scenario_definitions = self._filter_scenarios(config.scenario_configs)
@@ -120,14 +121,15 @@ class RouteScenario(BasicScenario):
 
     def _spawn_ego_vehicle(self, ego_vehicles):
         """Spawn the ego vehicle at the first waypoint of the route"""
-
-        for vehicle in ego_vehicles:
+        # elevate_transform = self.route[0][0]
+        # elevate_transform.location.z += 0.5
+        spawn_points = self.world.get_map().get_spawn_points()
+        for vehicle, spawn_point  in zip(ego_vehicles, spawn_points):
                 self.ego_vehicles.append(CarlaDataProvider.request_new_actor(vehicle.model,
-                                                                             vehicle.transform,
-                                                                             vehicle.rolename,
-                                                                             random_location=vehicle.random_location,
+                                                                             spawn_point,
                                                                              color=vehicle.color,
                                                                              actor_category=vehicle.category))
+
 
     def _estimate_route_timeout(self):
         """
@@ -216,7 +218,7 @@ class RouteScenario(BasicScenario):
         ego_data = []
 
         for vehicle in ego_vehicles:
-            ego_data.apend(ActorConfigurationData(vehicle.type_id, vehicle.get_transform(), 'hero'))
+            ego_data.append(ActorConfigurationData(vehicle.type_id, vehicle.get_transform(), 'hero'))
 
         if debug:
             tmap = CarlaDataProvider.get_map()
@@ -234,7 +236,7 @@ class RouteScenario(BasicScenario):
 
             try:
                 scenario_class = all_scenario_classes[scenario_config.type]
-                scenario_instance = scenario_class(world, [ego_vehicle], scenario_config, timeout=timeout)
+                scenario_instance = scenario_class(world, [self.ego_vehicles], scenario_config, timeout=timeout)
 
                 # Do a tick every once in a while to avoid spawning everything at the same time
                 if scenario_number % scenarios_per_tick == 0:
