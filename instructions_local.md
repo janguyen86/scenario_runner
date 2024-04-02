@@ -68,6 +68,8 @@ python3 manual_control.py --rolename hero2
  ```
 
 
+<ego_vehicle x="-2.8" y="66.2" z="0.5" yaw="90" model="vehicle.tesla.model3" rolename="hero2" agent="srunner/autoagents/huamn_agent.py"/>
+
 # New Files added 
 
 /srunner/autoagents/agent_sensor.py 

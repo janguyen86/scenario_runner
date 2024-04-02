@@ -120,17 +120,19 @@ class RouteScenario(BasicScenario):
         return new_scenarios_config
 
     def _spawn_ego_vehicle(self, ego_vehicles):
-        """Spawn the ego vehicle at the first waypoint of the route"""
-        # elevate_transform = self.route[0][0]
-        # elevate_transform.location.z += 0.5
-        spawn_points = self.world.get_map().get_spawn_points()
-        for vehicle, spawn_point  in zip(ego_vehicles, spawn_points):
-                self.ego_vehicles.append(CarlaDataProvider.request_new_actor(vehicle.model,
-                                                                             spawn_point,
+        """Spawn the ego vehicle at every 5th waypoint of the route"""
+        
+        for i, vehicle in enumerate(ego_vehicles):
+            if i > 0: 
+                i = i+5
+            elevate_transform = self.route[i][0]
+            elevate_transform.location.z += 0.5
+            self.ego_vehicles.append(CarlaDataProvider.request_new_actor(vehicle.model,
+                                                                             elevate_transform,
                                                                              color=vehicle.color,
-                                                                             actor_category=vehicle.category))
-
-
+                                                                             actor_category=vehicle.category,
+                                                                             rolename=vehicle.rolename))
+  
     def _estimate_route_timeout(self):
         """
         Estimate the duration of the route, as a proportinal value of its length

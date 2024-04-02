@@ -385,8 +385,8 @@ class ScenarioRunner(object):
         # Prepare scenario
         print("Preparing scenario: " + config.name)
         try:
-            self._prepare_ego_vehicles(config.ego_vehicles)
             if self._args.openscenario:
+                self._prepare_ego_vehicles(config.ego_vehicles)
                 scenario = OpenScenario(world=self.world,
                                         ego_vehicles=self.ego_vehicles,
                                         config=config,
@@ -398,6 +398,7 @@ class ScenarioRunner(object):
                                          config=config,
                                          debug_mode=self._args.debug)
             elif self._args.openscenario2:
+                self._prepare_ego_vehicles(config.ego_vehicles)
                 scenario = OSC2Scenario(world=self.world,
                                         ego_vehicles=self.ego_vehicles,
                                         config=config,
