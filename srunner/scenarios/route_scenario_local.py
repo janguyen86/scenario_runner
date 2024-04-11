@@ -65,9 +65,12 @@ class RouteScenario(BasicScenario):
 
         self.world = world 
         self.config = config
+        self.agents = config.agents
+        self.set_up_agents(config)
         self.route = self._get_route(config)
         sampled_scenario_definitions = self._filter_scenarios(config.scenario_configs)
 
+        
         self.ego_vehicles = []
         self._spawn_ego_vehicle(ego_vehicles)
         self.timeout = self._estimate_route_timeout()
@@ -82,6 +85,23 @@ class RouteScenario(BasicScenario):
         super(RouteScenario, self).__init__(
             config.name, self.ego_vehicles, config, world, debug_mode > 1, False, criteria_enable
         )
+
+    def set_up_agents(self, config):
+        
+        for agent in self.agents:
+            module_name = os.path.basename(agent).split('.')[0]
+            sys.path.insert(0, os.path.dirname(agent))
+            module_agent = importlib.import_module(module_name)
+
+            agent_class_name = module_agent.__name__.title().replace('_', '')
+            try:
+                agent_instance = getattr(module_agent, agent_class_name)("")
+                config.agent = agent_instance
+            except Exception as e:          # pylint: disable=broad-except
+                traceback.print_exc()
+                print("Could not setup required agent due to {}".format(e))
+                self._cleanup()
+                return False
 
     def _get_route(self, config):
         """

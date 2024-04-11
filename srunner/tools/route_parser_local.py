@@ -87,9 +87,12 @@ class RouteParser(object):
                     elif elem.tag == 'other_actor':
                         scenario_config.other_actors.append(ActorConfigurationData.parse_from_node(elem, 'scenario'))
                     if elem.tag == 'ego_vehicle':
-                        scenario_config.ego_vehicles.append(ActorConfigurationData.parse_from_node(elem, 'hero'))
-                        route_config.ego_vehicles.append(ActorConfigurationData.parse_from_node(elem, 'hero'))
+                        rolename = elem.attrib.get("rolename")
+                        agent = elem.attrib.get("agent")
+                        scenario_config.ego_vehicles.append(ActorConfigurationData.parse_from_node(elem, rolename))
+                        route_config.ego_vehicles.append(ActorConfigurationData.parse_from_node(elem, rolename))
                         scenario_config.trigger_points.append(scenario_config.ego_vehicles[-1].transform)
+                        route_config.agents.append(agent)
                     else:
                         scenario_config.other_parameters[elem.tag] = elem.attrib
                 scenario_configs.append(scenario_config)

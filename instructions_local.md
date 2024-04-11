@@ -67,8 +67,20 @@ python3 manual_control.py --rolename hero2
  --route /home/janice/scenario_runner/srunner/examples/AgentSensor.xml --route-id 0 --agent srunner/autoagents/npc_agent.py
  ```
 
+## Multi_agent Type Scenario Runner 
+Run route scenario
+```commandline 
+python scenario_runner_local.py --route /home/janice/scenario_runner/srunner/examples/AgentSensor.xml --route-id 0 
+```
 
-<ego_vehicle x="-2.8" y="66.2" z="0.5" yaw="90" model="vehicle.tesla.model3" rolename="hero2" agent="srunner/autoagents/huamn_agent.py"/>
+Start manual control agent for each ego vehicle 
+```commandline 
+python3 manual_control.py --rolename hero
+```
+
+```commandline 
+python3 manual_control.py --rolename hero2
+```
 
 # New Files added 
 
