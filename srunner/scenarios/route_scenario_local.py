@@ -105,6 +105,7 @@ class RouteScenario(BasicScenario):
 
     def _get_route(self, config):
         """
+        #TODO Set global plan for each agent and set corresponding route to each agent (for loop) change config.agent to array
         Gets the route from the configuration, interpolating it to the desired density,
         saving it to the CarlaDataProvider and sending it to the agent
 
