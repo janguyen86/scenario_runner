@@ -51,4 +51,4 @@ class RouteScenarioConfiguration(ScenarioConfiguration):
         self.keypoints = None
         self.scenario_configs = []
         self.ego_vehicles = []
-        self.agents = []
+        self.agent_file_paths = []

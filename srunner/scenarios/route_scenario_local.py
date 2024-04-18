@@ -88,7 +88,7 @@ class RouteScenario(BasicScenario):
 
     def set_up_agents(self, config):
         
-        for agent in self.agents:
+        for agent_file_path in self.agents:
             module_name = os.path.basename(agent).split('.')[0]
             sys.path.insert(0, os.path.dirname(agent))
             module_agent = importlib.import_module(module_name)
