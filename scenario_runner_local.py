@@ -461,11 +461,12 @@ class ScenarioRunner(object):
         # retrieve routes
         route_configurations = RouteParser.parse_routes_file(self._args.route, self._args.route_id)
 
-        for config in route_configurations:
-            for _ in range(self._args.repetitions):
-                result = self._load_and_run_scenario(config)
 
-                self._cleanup()
+        for _ in range(self._args.repetitions):
+            result = self._load_and_run_scenario(route_configurations)
+            self._cleanup()
+
+        
         return result
 
     def _run_openscenario(self):

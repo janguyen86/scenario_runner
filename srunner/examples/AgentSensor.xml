@@ -1,8 +1,8 @@
 <scenarios>
-   <scenario name="FreeRide1" type="FreeRide">
+   <scenario name="FreeRide1" type="FreeRide" town="Town10HD_Opt">
       <trigger_point x="71.0" y="66.3" z="0.0" yaw="-179.9"/>         
       <routes>
-         <route id="0" town="Town10HD_Opt">
+         <route id="0">
             <waypoints>
                <position x="85.7" y="66.4" z="0.0"/>
                <position x="-2.8" y="66.2" z="0.0"/>
@@ -13,9 +13,8 @@
             </waypoints>
             <ego_vehicle model="vehicle.lincoln.mkz_2017" rolename="hero" agent="srunner/autoagents/npc_agent.py"/>
          </route>
-         <route id="1" town="Town10HD_Opt">
+         <route id="1">
             <waypoints>
-               <position x="85.7" y="66.4" z="0.0"/>
                <position x="-2.8" y="66.2" z="0.0"/>
                <position x="-41.7" y="47.7" z="0.0"/>
                <position x="-41.7" y="-32.0" z="0.0"/>
