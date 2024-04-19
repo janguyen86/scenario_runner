@@ -96,13 +96,6 @@ class ScenarioRunner(object):
         if LooseVersion(dist.version) < LooseVersion('0.9.15'):
             raise ImportError("CARLA version 0.9.15 or newer required. CARLA version found: {}".format(dist))
 
-        # # Load agent if requested via command line args
-        # # If something goes wrong an exception will be thrown by importlib (ok here)
-        # if self._args.agent is not None:
-        #     module_name = os.path.basename(args.agent).split('.')[0]
-        #     sys.path.insert(0, os.path.dirname(args.agent))
-        #     self.module_agent = importlib.import_module(module_name)
-
         # Create the ScenarioManager
         self.manager = ScenarioManager(self._args.debug, self._args.sync, self._args.timeout)
 
@@ -364,17 +357,6 @@ class ScenarioRunner(object):
         if not self._load_and_wait_for_world(config.town, config.ego_vehicles):
             self._cleanup()
             return False
-
-        # if self._args.agent:
-        #     agent_class_name = self.module_agent.__name__.title().replace('_', '')
-        #     try:
-        #         self.agent_instance = getattr(self.module_agent, agent_class_name)(self._args.agentConfig)
-        #         config.agent = self.agent_instance
-        #     except Exception as e:          # pylint: disable=broad-except
-        #         traceback.print_exc()
-        #         print("Could not setup required agent due to {}".format(e))
-        #         self._cleanup()
-        #         return False
 
         CarlaDataProvider.set_traffic_manager_port(int(self._args.trafficManagerPort))
         tm = self.client.get_trafficmanager(int(self._args.trafficManagerPort))

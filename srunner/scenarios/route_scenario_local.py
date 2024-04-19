@@ -24,7 +24,7 @@ import carla
 
 from agents.navigation.local_planner import RoadOption
 
-from srunner.scenarioconfigs.scenario_configuration import ActorConfigurationData
+from srunner.scenarioconfigs.scenario_configuration_local import ActorConfigurationData
 from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 
 from srunner.scenariomanager.scenarioatomics.atomic_behaviors import ScenarioTriggerer, Idle
@@ -44,7 +44,7 @@ from srunner.scenariomanager.weather_sim import RouteWeatherBehavior
 from srunner.scenariomanager.lights_sim import RouteLightsBehavior
 from srunner.scenariomanager.timer import RouteTimeoutBehavior
 
-from srunner.tools.route_parser import RouteParser, DIST_THRESHOLD
+from srunner.tools.route_parser_local import RouteParser, DIST_THRESHOLD
 from srunner.tools.route_manipulation import interpolate_trajectory
 
 
@@ -65,18 +65,18 @@ class RouteScenario(BasicScenario):
 
         self.world = world 
         self.config = config
-        self.agents = config.agents
+        self.route_configs = config.route_configs
         self.set_up_agents(config)
-        self.route = self._get_route(config)
-        sampled_scenario_definitions = self._filter_scenarios(config.scenario_configs)
+        self.routes = self._get_route(config)
+        sampled_scenario_definitions = self._filter_scenarios(config)
 
-        
         self.ego_vehicles = []
         self._spawn_ego_vehicle(ego_vehicles)
         self.timeout = self._estimate_route_timeout()
 
         if debug_mode:
-            self._draw_waypoints(world, self.route, vertical_shift=0.1, size=0.1, persistency=self.timeout, downsample=5)
+            for route in self.routes:
+                self._draw_waypoints(world, route, vertical_shift=0.1, size=0.1, persistency=self.timeout, downsample=5)
 
         self._build_scenarios(
             world, self.ego_vehicles, sampled_scenario_definitions, timeout=self.timeout, debug=debug_mode > 0
@@ -87,16 +87,23 @@ class RouteScenario(BasicScenario):
         )
 
     def set_up_agents(self, config):
+        """
+        Set up agent instances from each route config
+
+        Parameters: 
+        - config: Scenario configuration
+        """
         
-        for agent_file_path in self.agents:
-            module_name = os.path.basename(agent).split('.')[0]
-            sys.path.insert(0, os.path.dirname(agent))
+        for route_config in self.route_configs:
+            agent_file_path = route_config.agent_file_path
+            module_name = os.path.basename(agent_file_path).split('.')[0]
+            sys.path.insert(0, os.path.dirname(agent_file_path))
             module_agent = importlib.import_module(module_name)
 
             agent_class_name = module_agent.__name__.title().replace('_', '')
             try:
                 agent_instance = getattr(module_agent, agent_class_name)("")
-                config.agent = agent_instance
+                config.agents.appned(agent_instance)
             except Exception as e:          # pylint: disable=broad-except
                 traceback.print_exc()
                 print("Could not setup required agent due to {}".format(e))
@@ -105,7 +112,7 @@ class RouteScenario(BasicScenario):
 
     def _get_route(self, config):
         """
-        #TODO Set global plan for each agent and set corresponding route to each agent (for loop) change config.agent to array
+        #TODO Set global plan for each agent and set corresponding route to each agent (for loop)
         Gets the route from the configuration, interpolating it to the desired density,
         saving it to the CarlaDataProvider and sending it to the agent
 
@@ -115,28 +122,28 @@ class RouteScenario(BasicScenario):
         - debug_mode: boolean to decide whether or not the route poitns are printed
         """
         # prepare route's trajectory (interpolate and add the GPS route)
-        gps_route, route = interpolate_trajectory(config.keypoints)
-        if config.agent is not None:
-            config.agent.set_global_plan(gps_route, route)
+        routes = []
+        for route_config, agent in zip(self.route_configs, config.agents):
+            gps_route, route = interpolate_trajectory(route_config.keypoints)
+            if agent is not None:
+                agent.set_global_plan(gps_route, route) #TODO: Double check what this line does 
+            routes.append(route)
+        return routes
 
-        return route
-
-    def _filter_scenarios(self, scenario_configs):
+    def _filter_scenarios(self, config):
         """
+        #TODO: Remove for loop because only dealing with 1 scenario config 
         Given a list of scenarios, filters out does that don't make sense to be triggered,
         as they are either too far from the route or don't fit with the route shape
 
         Parameters:
         - scenario_configs: list of ScenarioConfiguration
         """
-        new_scenarios_config = []
-        for scenario_config in scenario_configs:
-            trigger_point = scenario_config.trigger_points[0]
-            if not RouteParser.is_scenario_at_route(trigger_point, self.route):
-                print("WARNING: Ignoring scenario '{}' as it is too far from the route".format(scenario_config.name))
-                continue
-
-            new_scenarios_config.append(scenario_config)
+        trigger_point = config.trigger_points[0]
+        # if not RouteParser.is_scenario_at_route(trigger_point, self.route):
+        #     print("WARNING: Ignoring scenario '{}' as it is too far from the route".format(config.name)) TODO: Double check if this is needed
+        
+        new_scenarios_config = config
 
         return new_scenarios_config
 

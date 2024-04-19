@@ -12,7 +12,7 @@ This module provides the key configuration parameters for a route-based scenario
 import carla
 from agents.navigation.local_planner import RoadOption
 
-from srunner.scenarioconfigs.scenario_configuration import ScenarioConfiguration
+from srunner.scenarioconfigs.scenario_configuration_local import ScenarioConfiguration
 
 
 class RouteConfiguration(object):
@@ -49,6 +49,5 @@ class RouteScenarioConfiguration(ScenarioConfiguration):
     def __init__(self):
         super(RouteScenarioConfiguration, self).__init__()
         self.keypoints = None
-        self.scenario_configs = []
-        self.ego_vehicles = []
-        self.agent_file_paths = []
+        self.ego_vehicle = None 
+        self.agent_file_path = None

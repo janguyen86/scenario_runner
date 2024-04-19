@@ -1,22 +1,29 @@
-<routes>
-    <route id="0" town="Town10HD_Opt">
-      
-      <waypoints>
-         <position x="85.7" y="66.4" z="0.0"/>
-         <position x="-2.8" y="66.2" z="0.0"/>
-         <position x="-41.7" y="47.7" z="0.0"/>
-         <position x="-41.7" y="-32.0" z="0.0"/>
-         <position x="12.7" y="-57.4" z="0.0"/>
-         <position x="-0.8" y="13.2" z="0.0"/>
-      </waypoints>
-      <scenarios>
-         <scenario name="FreeRide1" type="FreeRide">
-            <trigger_point x="71.0" y="66.3" z="0.0" yaw="-179.9"/>
+<scenarios>
+   <scenario name="FreeRide1" type="FreeRide">
+      <trigger_point x="71.0" y="66.3" z="0.0" yaw="-179.9"/>         
+      <routes>
+         <route id="0" town="Town10HD_Opt">
+            <waypoints>
+               <position x="85.7" y="66.4" z="0.0"/>
+               <position x="-2.8" y="66.2" z="0.0"/>
+               <position x="-41.7" y="47.7" z="0.0"/>
+               <position x="-41.7" y="-32.0" z="0.0"/>
+               <position x="12.7" y="-57.4" z="0.0"/>
+               <position x="-0.8" y="13.2" z="0.0"/>
+            </waypoints>
             <ego_vehicle model="vehicle.lincoln.mkz_2017" rolename="hero" agent="srunner/autoagents/npc_agent.py"/>
+         </route>
+         <route id="1" town="Town10HD_Opt">
+            <waypoints>
+               <position x="85.7" y="66.4" z="0.0"/>
+               <position x="-2.8" y="66.2" z="0.0"/>
+               <position x="-41.7" y="47.7" z="0.0"/>
+               <position x="-41.7" y="-32.0" z="0.0"/>
+               <position x="12.7" y="-57.4" z="0.0"/>
+               <position x="-0.8" y="13.2" z="0.0"/>
+            </waypoints>
             <ego_vehicle model="vehicle.tesla.model3" rolename="hero2" agent="srunner/autoagents/human_agent.py"/>
-         </scenario>
-      </scenarios>
-   </route>
-</routes>
-
-#TODO: Swap route and scenario so that ego vehicles have same scenario but different routes 
+         </route>
+      </routes>
+   </scenario>
+</scenarios>

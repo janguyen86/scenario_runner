@@ -64,7 +64,7 @@ python3 manual_control.py --rolename hero2
 
  Run debug mode with Arguements 
  ```commandline
- --route /home/janice/scenario_runner/srunner/examples/AgentSensor.xml --route-id 0 --agent srunner/autoagents/npc_agent.py
+ --route /home/janice/scenario_runner/srunner/examples/AgentSensor.xml 
  ```
 
 ## Multi_agent Type Scenario Runner 
