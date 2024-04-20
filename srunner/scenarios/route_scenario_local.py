@@ -68,18 +68,23 @@ class RouteScenario(BasicScenario):
         self.route_configs = config.route_configs
         self.set_up_agents(config)
         self.routes = self._get_route(config)
-        sampled_scenario_definitions = self._filter_scenarios(config)
+        # sampled_scenario_definitions = self._filter_scenarios(config)
 
         self.ego_vehicles = []
         self._spawn_ego_vehicle(ego_vehicles)
-        self.timeout = self._estimate_route_timeout()
+        # self.timeout = self._estimate_route_timeout()
 
-        if debug_mode:
-            for route in self.routes:
-                self._draw_waypoints(world, route, vertical_shift=0.1, size=0.1, persistency=self.timeout, downsample=5)
+        
+        max_timeout = 0 
+        for route in self.routes:
+            timeout = self._estimate_route_timeout(route)
+            if debug_mode:
+                self._draw_waypoints(world, route, vertical_shift=0.1, size=0.1, persistency=timeout, downsample=5)
+            if timeout > max_timeout: 
+                max_timeout=timeout
 
         self._build_scenarios(
-            world, self.ego_vehicles, sampled_scenario_definitions, timeout=self.timeout, debug=debug_mode > 0
+            world, self.ego_vehicles, config, timeout=max_timeout, debug=debug_mode > 0
         )
 
         super(RouteScenario, self).__init__(
@@ -139,7 +144,11 @@ class RouteScenario(BasicScenario):
         Parameters:
         - scenario_configs: list of ScenarioConfiguration
         """
+<<<<<<< HEAD
         # trigger_point = config.trigger_points[0]
+=======
+        # trigger_point = config.trigger_points
+>>>>>>> 92aee352756c7e57669d9796457c111a2cf79527
         # if not RouteParser.is_scenario_at_route(trigger_point, self.route):
         #     print("WARNING: Ignoring scenario '{}' as it is too far from the route".format(config.name)) TODO: Double check if this is needed
         
@@ -161,14 +170,14 @@ class RouteScenario(BasicScenario):
                                                                              actor_category=vehicle.category,
                                                                              rolename=vehicle.rolename))
   
-    def _estimate_route_timeout(self):
+    def _estimate_route_timeout(self, route):
         """
         Estimate the duration of the route, as a proportinal value of its length
         """
         route_length = 0.0  # in meters
 
-        prev_point = self.route[0][0]
-        for current_point, _ in self.route[1:]:
+        prev_point = route[0]
+        for current_point, _ in route[:]:
             dist = current_point.location.distance(prev_point.location)
             route_length += dist
             prev_point = current_point

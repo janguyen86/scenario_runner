@@ -59,13 +59,14 @@ class RouteParser(object):
             scenario_config.name = scenario.attrib.get('name')
             scenario_config.type = scenario.attrib.get('type')
 
+            scenario_config.town = scenario.attrib['town']
+
             for route in scenario.find("routes").iter("route"):
                 route_id = route.attrib['id']
                 if single_route_id and route_id != single_route_id:
                     continue 
 
                 route_config = RouteScenarioConfiguration()
-                route_config.town = route.attrib['town']
                 route_config.name = "RouteScenario_{}".format(route_id)
                 route_config.weather = RouteParser.parse_weather(route)
 
@@ -82,7 +83,7 @@ class RouteParser(object):
                 agent_file_path = ego_vehicle.attrib.get("agent")
                 route_config.ego_vehicle = ActorConfigurationData.parse_from_node(ego_vehicle, rolename)
                 route_config.agent_file_path= agent_file_path
-                scenario_config.trigger_points.append(route_config.ego_vehicle.transform) #TODO: Double check what this line does 
+                # scenario_config.trigger_points.append(route_config.ego_vehicle.transform) #TODO: Double check what this line does 
                 scenario_config.route_configs.append(route_config)
         return scenario_config.route_configs
 

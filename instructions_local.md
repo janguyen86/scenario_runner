@@ -70,7 +70,7 @@ python3 manual_control.py --rolename hero2
 ## Multi_agent Type Scenario Runner 
 Run route scenario
 ```commandline 
-python scenario_runner_local.py --route /home/janice/scenario_runner/srunner/examples/AgentSensor.xml --route-id 0 
+python scenario_runner_local.py --route /home/janice/scenario_runner/srunner/examples/AgentSensor.xml
 ```
 
 Start manual control agent for each ego vehicle 
