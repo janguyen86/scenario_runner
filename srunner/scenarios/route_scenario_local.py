@@ -108,7 +108,7 @@ class RouteScenario(BasicScenario):
             agent_class_name = module_agent.__name__.title().replace('_', '')
             try:
                 agent_instance = getattr(module_agent, agent_class_name)("")
-                config.agents.appned(agent_instance)
+                config.agents.append(agent_instance)
             except Exception as e:          # pylint: disable=broad-except
                 traceback.print_exc()
                 print("Could not setup required agent due to {}".format(e))
@@ -144,11 +144,7 @@ class RouteScenario(BasicScenario):
         Parameters:
         - scenario_configs: list of ScenarioConfiguration
         """
-<<<<<<< HEAD
-        # trigger_point = config.trigger_points[0]
-=======
         # trigger_point = config.trigger_points
->>>>>>> 92aee352756c7e57669d9796457c111a2cf79527
         # if not RouteParser.is_scenario_at_route(trigger_point, self.route):
         #     print("WARNING: Ignoring scenario '{}' as it is too far from the route".format(config.name)) TODO: Double check if this is needed
         
@@ -159,10 +155,12 @@ class RouteScenario(BasicScenario):
     def _spawn_ego_vehicle(self, ego_vehicles):
         """Spawn the ego vehicle at every 5th waypoint of the route"""
         
-        for i, vehicle in enumerate(ego_vehicles):
-            if i > 0: 
-                i = i+5
-            elevate_transform = self.route[i][0]
+        for vehicle, route in zip(ego_vehicles, self.routes):
+            # if i > 0: 
+            #     i = i+5
+            # elevate_transform = self.route[i][0]
+            # elevate_transform.location.z += 0.5
+            elevate_transform = route[0][0]
             elevate_transform.location.z += 0.5
             self.ego_vehicles.append(CarlaDataProvider.request_new_actor(vehicle.model,
                                                                              elevate_transform,
@@ -176,7 +174,7 @@ class RouteScenario(BasicScenario):
         """
         route_length = 0.0  # in meters
 
-        prev_point = route[0]
+        prev_point = route[0][0]
         for current_point, _ in route[:]:
             dist = current_point.location.distance(prev_point.location)
             route_length += dist

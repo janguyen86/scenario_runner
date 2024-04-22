@@ -83,9 +83,10 @@ class RouteParser(object):
                 agent_file_path = ego_vehicle.attrib.get("agent")
                 route_config.ego_vehicle = ActorConfigurationData.parse_from_node(ego_vehicle, rolename)
                 route_config.agent_file_path= agent_file_path
+                scenario_config.ego_vehicles.append(ActorConfigurationData.parse_from_node(ego_vehicle, 'hero'))
                 # scenario_config.trigger_points.append(route_config.ego_vehicle.transform) #TODO: Double check what this line does 
                 scenario_config.route_configs.append(route_config)
-        return scenario_config.route_configs
+        return scenario_config
 
     @staticmethod
     def parse_weather(route):
