@@ -109,3 +109,4 @@ class ScenarioConfiguration(object):
         self.subtype = None
         self.route_var_name = None
         self.route_configs = []
+        

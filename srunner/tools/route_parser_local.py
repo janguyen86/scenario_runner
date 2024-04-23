@@ -53,7 +53,7 @@ class RouteParser(object):
         """
 
         tree = ET.parse(route_filename)
-        route_configs = []
+        scenario_config_list = []
         for scenario in tree.iter("scenario"): 
             scenario_config = ScenarioConfiguration()
             scenario_config.name = scenario.attrib.get('name')
@@ -86,7 +86,8 @@ class RouteParser(object):
                 scenario_config.ego_vehicles.append(ActorConfigurationData.parse_from_node(ego_vehicle, 'hero'))
                 # scenario_config.trigger_points.append(route_config.ego_vehicle.transform) #TODO: Double check what this line does 
                 scenario_config.route_configs.append(route_config)
-        return scenario_config
+            scenario_config_list.append(scenario_config)
+        return scenario_config_list
 
     @staticmethod
     def parse_weather(route):
