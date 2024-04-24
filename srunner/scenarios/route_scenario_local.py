@@ -38,7 +38,7 @@ from srunner.scenariomanager.scenarioatomics.atomic_criteria import (CollisionTe
                                                                      ActorBlockedTest,
                                                                      MinimumSpeedRouteTest)
 
-from srunner.scenarios.basic_scenario import BasicScenario
+from srunner.scenarios.basic_scenario_local import BasicScenario
 from srunner.scenarios.background_activity import BackgroundBehavior
 from srunner.scenariomanager.weather_sim import RouteWeatherBehavior
 from srunner.scenariomanager.lights_sim import RouteLightsBehavior
@@ -65,8 +65,8 @@ class RouteScenario(BasicScenario):
 
         self.world = world 
         self.config = config
-        self.route_configs = config.route_configs
-        self.set_up_agents(config)
+        self.route_configs = config[0].route_configs
+        self.set_up_agents(config[0])
         self.routes = self._get_route(config)
         # sampled_scenario_definitions = self._filter_scenarios(config)
 
@@ -74,7 +74,6 @@ class RouteScenario(BasicScenario):
         self._spawn_ego_vehicle(ego_vehicles)
         # self.timeout = self._estimate_route_timeout()
 
-        
         max_timeout = 0 
         for route in self.routes:
             timeout = self._estimate_route_timeout(route)
@@ -88,7 +87,7 @@ class RouteScenario(BasicScenario):
         )
 
         super(RouteScenario, self).__init__(
-            config.name, self.ego_vehicles, config, world, debug_mode > 1, False, criteria_enable
+            config[0].name, self.ego_vehicles, config[0], world, debug_mode > 1, False, criteria_enable
         )
 
     def set_up_agents(self, config):
@@ -128,7 +127,7 @@ class RouteScenario(BasicScenario):
         """
         # prepare route's trajectory (interpolate and add the GPS route)
         routes = []
-        for route_config, agent in zip(self.route_configs, config.agents):
+        for route_config, agent in zip(self.route_configs, config[0].agents):
             gps_route, route = interpolate_trajectory(route_config.keypoints)
             if agent is not None:
                 agent.set_global_plan(gps_route, route) #TODO: Double check what this line does 
@@ -269,7 +268,7 @@ class RouteScenario(BasicScenario):
         for scenario_number, scenario_config in enumerate(scenario_definitions):
             scenario_config.ego_vehicles = ego_data
             scenario_config.route_var_name = "ScenarioRouteNumber{}".format(scenario_number)
-            scenario_config.route = self.route
+            # scenario_config.route = self.route
 
             try:
                 scenario_class = all_scenario_classes[scenario_config.type]

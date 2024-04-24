@@ -354,7 +354,7 @@ class ScenarioRunner(object):
         Load and run the scenario given by config
         """
         result = False
-        if not self._load_and_wait_for_world(config.town, config.ego_vehicles):
+        if not self._load_and_wait_for_world(config[0].town, config[0].ego_vehicles):
             self._cleanup()
             return False
 
@@ -365,7 +365,7 @@ class ScenarioRunner(object):
             tm.set_synchronous_mode(True)
 
         # Prepare scenario
-        print("Preparing scenario: " + config.name)
+        print("Preparing scenario")
         try:
             if self._args.openscenario:
                 self._prepare_ego_vehicles(config.ego_vehicles)
@@ -376,7 +376,7 @@ class ScenarioRunner(object):
                                         timeout=100000)
             elif self._args.route:
                 scenario = RouteScenario(world=self.world,
-                                         ego_vehicles=config.ego_vehicles,
+                                         ego_vehicles=config[0].ego_vehicles,
                                          config=config,
                                          debug_mode=self._args.debug)
             elif self._args.openscenario2:
@@ -461,12 +461,10 @@ class ScenarioRunner(object):
         # retrieve routes
         route_configurations = RouteParser.parse_routes_file(self._args.route, self._args.route_id)
 
-
         for _ in range(self._args.repetitions):
             result = self._load_and_run_scenario(route_configurations)
             self._cleanup()
 
-        
         return result
 
     def _run_openscenario(self):
