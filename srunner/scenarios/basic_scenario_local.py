@@ -48,9 +48,9 @@ class BasicScenario(object):
         self.criteria_enable = criteria_enable
 
         self.route_configs = config.route_configs
+        self.route_mode = bool(self.route_configs)
         self.behavior_tree = None
         self.criteria_tree = None
-
 
         # If no timeout was provided, set it to 60 seconds
         if not hasattr(self, 'timeout'):
@@ -74,22 +74,35 @@ class BasicScenario(object):
         # Add a trigger and end condition to the behavior to ensure it is only activated when it is relevant
         self.behavior_tree = py_trees.composites.Sequence()
 
-        for route in self.route_configs: 
-            self.route_mode = route 
-            if not self.route_mode:
-                        # Only init env for route mode, avoid duplicate initialization during runtime
-                        self._initialize_environment(world)
-            trigger_behavior = self._setup_scenario_trigger(config)
-            if trigger_behavior:
-                self.behavior_tree.add_child(trigger_behavior)
-            end_behavior = self._setup_scenario_end(config)
-            if end_behavior:
-                self.behavior_tree.add_child(end_behavior)
+        # for route in self.route_configs: 
+        #     self.route_mode = route 
+        #     if not self.route_mode:
+        #                 # Only init env for route mode, avoid duplicate initialization during runtime
+        #                 self._initialize_environment(world)
+        #     trigger_behavior = self._setup_scenario_trigger(config)
+        #     if trigger_behavior:
+        #         self.behavior_tree.add_child(trigger_behavior)
+        #     end_behavior = self._setup_scenario_end(config)
+        #     if end_behavior:
+        #         self.behavior_tree.add_child(end_behavior)
     
-            scenario_behavior = self._create_behavior()
-            if scenario_behavior is not None:
-                self.behavior_tree.add_child(scenario_behavior)
-                self.behavior_tree.name = scenario_behavior.name
+        # scenario_behavior = self._create_behavior()
+        # if scenario_behavior is not None:
+        #     self.behavior_tree.add_child(scenario_behavior)
+        #     self.behavior_tree.name = scenario_behavior.name
+
+        trigger_behavior = self._setup_scenario_trigger(config)
+        if trigger_behavior:
+            self.behavior_tree.add_child(trigger_behavior)
+
+        scenario_behavior = self._create_behavior()
+        if scenario_behavior is not None:
+            self.behavior_tree.add_child(scenario_behavior)
+            self.behavior_tree.name = scenario_behavior.name
+
+        end_behavior = self._setup_scenario_end(config)
+        if end_behavior:
+            self.behavior_tree.add_child(end_behavior)
 
         # Create the lights behavior
         lights = self._create_lights_behavior()

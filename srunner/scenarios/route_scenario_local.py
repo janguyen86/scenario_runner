@@ -82,6 +82,7 @@ class RouteScenario(BasicScenario):
             if timeout > max_timeout: 
                 max_timeout=timeout
 
+        self.timeout = timeout
         self._build_scenarios(
             world, self.ego_vehicles, config, timeout=max_timeout, debug=debug_mode > 0
         )
@@ -321,15 +322,24 @@ class RouteScenario(BasicScenario):
                 blackboard_list.append([scenario.config.route_var_name,
                                         scenario.config.trigger_points[0].location])
 
-        for route in self.routes:
-            # Add the behavior that manages the scenario trigger conditions
-            scenario_triggerer = ScenarioTriggerer(
-                self.ego_vehicles[0], route, blackboard_list, scenario_trigger_distance)
-            behavior.add_child(scenario_triggerer)  # Tick the ScenarioTriggerer before the scenarios
+        # for route in self.routes:
+        #     # Add the behavior that manages the scenario trigger conditions
+        #     scenario_triggerer = ScenarioTriggerer(
+        #         self.ego_vehicles[0], route, blackboard_list, scenario_trigger_distance)
+        #     behavior.add_child(scenario_triggerer)  # Tick the ScenarioTriggerer before the scenarios
 
-            # Add the Background Activity
-            behavior.add_child(BackgroundBehavior(self.ego_vehicles[0], route, name="BackgroundActivity"))
-            behavior.add_children(scenario_behaviors)
+        #     # Add the Background Activity
+        #     behavior.add_child(BackgroundBehavior(self.ego_vehicles[0], route, name="BackgroundActivity"))
+        #     behavior.add_children(scenario_behaviors)
+        
+        scenario_triggerer = ScenarioTriggerer(
+            self.ego_vehicles[0], self.routes[0], blackboard_list, scenario_trigger_distance)
+        behavior.add_child(scenario_triggerer)  # Tick the ScenarioTriggerer before the scenarios
+
+        # Add the Background Activity
+        behavior.add_child(BackgroundBehavior(self.ego_vehicles[0], self.routes[0], name="BackgroundActivity"))
+
+        behavior.add_children(scenario_behaviors)
         return behavior
 
     def _create_test_criteria(self):
@@ -385,10 +395,11 @@ class RouteScenario(BasicScenario):
 
     def _create_timeout_behavior(self):
         """
+        #TODO: Figure out timeout behavior here 
         Create the timeout behavior
         """
-        for route in self.routes:
-            RouteTimeoutBehavior(self.ego_vehicles[0], route)
+        # for route in self.routes:
+        RouteTimeoutBehavior(self.ego_vehicles[0], self.routes[0])
 
     def _initialize_environment(self, world):
         """
