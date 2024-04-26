@@ -249,7 +249,7 @@ class ScenarioRunner(object):
         current_time = str(datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))
         junit_filename = None
         json_filename = None
-        config_name = config.name
+        config_name = config[0].name
         if self._args.outputDir != '':
             config_name = os.path.join(self._args.outputDir, config_name)
 

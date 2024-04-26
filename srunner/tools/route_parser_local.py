@@ -60,7 +60,7 @@ class RouteParser(object):
             scenario_config.type = scenario.attrib.get('type')
 
             scenario_config.town = scenario.attrib['town']
-
+            scenario_config.trigger_points.append(convert_elem_to_transform(scenario.find('trigger_point')))
             for route in scenario.find("routes").iter("route"):
                 route_id = route.attrib['id']
                 if single_route_id and route_id != single_route_id:

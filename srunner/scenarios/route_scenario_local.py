@@ -89,6 +89,7 @@ class RouteScenario(BasicScenario):
         super(RouteScenario, self).__init__(
             config[0].name, self.ego_vehicles, config[0], world, debug_mode > 1, False, criteria_enable
         )
+        print("")
 
     def set_up_agents(self, config):
         """
@@ -320,15 +321,15 @@ class RouteScenario(BasicScenario):
                 blackboard_list.append([scenario.config.route_var_name,
                                         scenario.config.trigger_points[0].location])
 
-        # Add the behavior that manages the scenario trigger conditions
-        scenario_triggerer = ScenarioTriggerer(
-            self.ego_vehicles[0], self.route, blackboard_list, scenario_trigger_distance)
-        behavior.add_child(scenario_triggerer)  # Tick the ScenarioTriggerer before the scenarios
+        for route in self.routes:
+            # Add the behavior that manages the scenario trigger conditions
+            scenario_triggerer = ScenarioTriggerer(
+                self.ego_vehicles[0], route, blackboard_list, scenario_trigger_distance)
+            behavior.add_child(scenario_triggerer)  # Tick the ScenarioTriggerer before the scenarios
 
-        # Add the Background Activity
-        behavior.add_child(BackgroundBehavior(self.ego_vehicles[0], self.route, name="BackgroundActivity"))
-
-        behavior.add_children(scenario_behaviors)
+            # Add the Background Activity
+            behavior.add_child(BackgroundBehavior(self.ego_vehicles[0], route, name="BackgroundActivity"))
+            behavior.add_children(scenario_behaviors)
         return behavior
 
     def _create_test_criteria(self):
@@ -339,22 +340,23 @@ class RouteScenario(BasicScenario):
         criteria = py_trees.composites.Parallel(name="Criteria",
                                                 policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
 
-        # End condition
-        criteria.add_child(RouteCompletionTest(self.ego_vehicles[0], route=self.route))
+        for route in self.routes:
+            # End condition
+            criteria.add_child(RouteCompletionTest(self.ego_vehicles[0], route=route))
 
-        # 'Normal' criteria
-        criteria.add_child(OutsideRouteLanesTest(self.ego_vehicles[0], route=self.route))
-        criteria.add_child(CollisionTest(self.ego_vehicles[0], name="CollisionTest"))
-        criteria.add_child(RunningRedLightTest(self.ego_vehicles[0]))
-        criteria.add_child(RunningStopTest(self.ego_vehicles[0]))
-        criteria.add_child(MinimumSpeedRouteTest(self.ego_vehicles[0], route=self.route, checkpoints=4, name="MinSpeedTest"))
+            # 'Normal' criteria
+            criteria.add_child(OutsideRouteLanesTest(self.ego_vehicles[0], route=route))
+            criteria.add_child(CollisionTest(self.ego_vehicles[0], name="CollisionTest"))
+            criteria.add_child(RunningRedLightTest(self.ego_vehicles[0]))
+            criteria.add_child(RunningStopTest(self.ego_vehicles[0]))
+            criteria.add_child(MinimumSpeedRouteTest(self.ego_vehicles[0], route=route, checkpoints=4, name="MinSpeedTest"))
 
-        # These stop the route early to save computational time
-        criteria.add_child(InRouteTest(
-            self.ego_vehicles[0], route=self.route, offroad_max=30, terminate_on_failure=True))
-        criteria.add_child(ActorBlockedTest(
-            self.ego_vehicles[0], min_speed=0.1, max_time=180.0, terminate_on_failure=True, name="AgentBlockedTest")
-        )
+            # These stop the route early to save computational time
+            criteria.add_child(InRouteTest(
+                self.ego_vehicles[0], route=route, offroad_max=30, terminate_on_failure=True))
+            criteria.add_child(ActorBlockedTest(
+                self.ego_vehicles[0], min_speed=0.1, max_time=180.0, terminate_on_failure=True, name="AgentBlockedTest")
+            )
 
         for scenario in self.list_scenarios:
             scenario_criteria = scenario.get_criteria()
@@ -371,9 +373,9 @@ class RouteScenario(BasicScenario):
         """
         Create the weather behavior
         """
-        if len(self.config.weather) == 1:
-            return  # Just set the weather at the beginning and done
-        return RouteWeatherBehavior(self.ego_vehicles[0], self.route, self.config.weather)
+        # if len(self.config.weather) == 1:
+        return  # Just set the weather at the beginning and done
+        # return RouteWeatherBehavior(self.ego_vehicles[0], self.route, self.config.weather)
 
     def _create_lights_behavior(self):
         """
@@ -385,7 +387,8 @@ class RouteScenario(BasicScenario):
         """
         Create the timeout behavior
         """
-        return RouteTimeoutBehavior(self.ego_vehicles[0], self.route)
+        for route in self.routes:
+            RouteTimeoutBehavior(self.ego_vehicles[0], route)
 
     def _initialize_environment(self, world):
         """

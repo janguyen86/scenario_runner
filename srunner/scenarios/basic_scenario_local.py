@@ -85,11 +85,11 @@ class BasicScenario(object):
             end_behavior = self._setup_scenario_end(config)
             if end_behavior:
                 self.behavior_tree.add_child(end_behavior)
-                
-        scenario_behavior = self._create_behavior()
-        if scenario_behavior is not None:
-            self.behavior_tree.add_child(scenario_behavior)
-            self.behavior_tree.name = scenario_behavior.name
+    
+            scenario_behavior = self._create_behavior()
+            if scenario_behavior is not None:
+                self.behavior_tree.add_child(scenario_behavior)
+                self.behavior_tree.name = scenario_behavior.name
 
         # Create the lights behavior
         lights = self._create_lights_behavior()
