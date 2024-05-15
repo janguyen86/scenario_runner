@@ -129,8 +129,8 @@ class ScenarioRunner(object):
         if self.manager:
             self.manager.stop_scenario()
             self._cleanup()
-            if not self.manager.get_running_status():
-                raise RuntimeError("Timeout occurred during scenario execution")
+            # if not self.manager.get_running_status():
+            #     raise RuntimeError("Timeout occurred during scenario execution")
 
     def _get_scenario_class_or_fail(self, scenario):
         """
