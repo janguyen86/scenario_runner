@@ -72,6 +72,7 @@ python3 manual_control.py --rolename hero2
  --route /home/janice/scenario_runner/srunner/examples/AgentSensor.xml 
  ```
 
+
 ## Multi_agent Type Scenario Runner 
 Run route scenario
 ```commandline 
