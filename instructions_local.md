@@ -60,7 +60,7 @@ python3 manual_control.py --rolename hero
 python3 manual_control.py --rolename hero2
 ```
 
-## Debugging Mode 
+## Debugging Mode for Local Files  
  Run carla server 
 
  ```commandline 
@@ -72,6 +72,32 @@ python3 manual_control.py --rolename hero2
  --route /home/janice/scenario_runner/srunner/examples/AgentSensor.xml 
  ```
 
+## Debugging Mode for Debug Files  
+ Run carla server 
+
+ ```commandline 
+ sudo docker run --privileged --gpus all --net=host -e DISPLAY=$DISPLAY carlasim/carla:0.9.15 /bin/bash ./CarlaUE4.sh
+ ```
+
+ Run debug mode with Arguements 
+ ```commandline
+ --route /home/janice/scenario_runner/srunner/examples/AgentSensor.xml 
+ ```
+
+Run route scenario
+```commandline 
+python scenario_runner_debug.py --route /home/janice/scenario_runner/srunner/data/routes_town10.xml --route-id 0 --agent srunner/autoagents/human_agent.py
+```
+
+Start manual control agent 
+```commandline 
+python3 manual_control.py 
+```
+
+Run route scenario
+```commandline 
+python scenario_runner_debug.py --route /home/janice/scenario_runner/srunner/examples/AgentSensor.xml
+```
 
 ## Multi_agent Type Scenario Runner 
 Run route scenario
