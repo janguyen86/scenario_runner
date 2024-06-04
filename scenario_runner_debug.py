@@ -34,11 +34,11 @@ import carla
 
 from srunner.scenarioconfigs.openscenario_configuration import OpenScenarioConfiguration
 from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
-from srunner.scenariomanager.scenario_manager_debug import ScenarioManager
+from srunner.scenariomanager.scenario_manager import ScenarioManager
 from srunner.scenarios.open_scenario import OpenScenario
-from srunner.scenarios.route_scenario_debug import RouteScenario
+from srunner.scenarios.route_scenario import RouteScenario
 from srunner.tools.scenario_parser import ScenarioConfigurationParser
-from srunner.tools.route_parser_debug import RouteParser
+from srunner.tools.route_parser import RouteParser
 from srunner.tools.osc2_helper import OSC2Helper
 from srunner.scenarios.osc2_scenario import OSC2Scenario
 from srunner.scenarioconfigs.osc2_scenario_configuration import OSC2ScenarioConfiguration
@@ -365,16 +365,16 @@ class ScenarioRunner(object):
             self._cleanup()
             return False
 
-        # if self._args.agent:
-        #     agent_class_name = self.module_agent.__name__.title().replace('_', '')
-        #     try:
-        #         self.agent_instance = getattr(self.module_agent, agent_class_name)(self._args.agentConfig)
-        #         config.agent = self.agent_instance
-        #     except Exception as e:          # pylint: disable=broad-except
-        #         traceback.print_exc()
-        #         print("Could not setup required agent due to {}".format(e))
-        #         self._cleanup()
-        #         return False
+        if self._args.agent:
+            agent_class_name = self.module_agent.__name__.title().replace('_', '')
+            try:
+                self.agent_instance = getattr(self.module_agent, agent_class_name)(self._args.agentConfig)
+                config.agent = self.agent_instance
+            except Exception as e:          # pylint: disable=broad-except
+                traceback.print_exc()
+                print("Could not setup required agent due to {}".format(e))
+                self._cleanup()
+                return False
 
         CarlaDataProvider.set_traffic_manager_port(int(self._args.trafficManagerPort))
         tm = self.client.get_trafficmanager(int(self._args.trafficManagerPort))
@@ -385,11 +385,30 @@ class ScenarioRunner(object):
         # Prepare scenario
         print("Preparing scenario: " + config.name)
         try:
-            # self._prepare_ego_vehicles(config.ego_vehicles)
-            if self._args.route:
+            self._prepare_ego_vehicles(config.ego_vehicles)
+            if self._args.openscenario:
+                scenario = OpenScenario(world=self.world,
+                                        ego_vehicles=self.ego_vehicles,
+                                        config=config,
+                                        config_file=self._args.openscenario,
+                                        timeout=100000)
+            elif self._args.route:
                 scenario = RouteScenario(world=self.world,
                                          config=config,
                                          debug_mode=self._args.debug)
+            elif self._args.openscenario2:
+                scenario = OSC2Scenario(world=self.world,
+                                        ego_vehicles=self.ego_vehicles,
+                                        config=config,
+                                        osc2_file=self._args.openscenario2,
+                                        timeout=100000)
+            else:
+                scenario_class = self._get_scenario_class_or_fail(config.type)
+                scenario = scenario_class(world=self.world,
+                                          ego_vehicles=self.ego_vehicles,
+                                          config=config,
+                                          randomize=self._args.randomize,
+                                          debug_mode=self._args.debug)
         except Exception as exception:                  # pylint: disable=broad-except
             print("The scenario cannot be loaded")
             traceback.print_exc()
@@ -426,6 +445,29 @@ class ScenarioRunner(object):
         self._cleanup()
         return result
 
+    def _run_scenarios(self):
+        """
+        Run conventional scenarios (e.g. implemented using the Python API of ScenarioRunner)
+        """
+        result = False
+
+        # Load the scenario configurations provided in the config file
+        scenario_configurations = ScenarioConfigurationParser.parse_scenario_configuration(
+            self._args.scenario,
+            self._args.configFile)
+        if not scenario_configurations:
+            print("Configuration for scenario {} cannot be found!".format(self._args.scenario))
+            return result
+
+        # Execute each configuration
+        for config in scenario_configurations:
+            for _ in range(self._args.repetitions):
+                self.finished = False
+                result = self._load_and_run_scenario(config)
+
+            self._cleanup()
+        return result
+
     def _run_route(self):
         """
         Run the route scenario
@@ -442,15 +484,59 @@ class ScenarioRunner(object):
                 self._cleanup()
         return result
 
+    def _run_openscenario(self):
+        """
+        Run a scenario based on OpenSCENARIO
+        """
+
+        # Load the scenario configurations provided in the config file
+        if not os.path.isfile(self._args.openscenario):
+            print("File does not exist")
+            self._cleanup()
+            return False
+
+        openscenario_params = {}
+        if self._args.openscenarioparams is not None:
+            for entry in self._args.openscenarioparams.split(','):
+                [key, val] = [m.strip() for m in entry.split(':')]
+                openscenario_params[key] = val
+        config = OpenScenarioConfiguration(self._args.openscenario, self.client, openscenario_params)
+
+        result = self._load_and_run_scenario(config)
+        self._cleanup()
+        return result
+
+    def _run_osc2(self):
+        """
+        Run a scenario based on ASAM OpenSCENARIO 2.0.
+        https://www.asam.net/static_downloads/public/asam-openscenario/2.0.0/welcome.html
+        """
+        # Load the scenario configurations provided in the config file
+        if not os.path.isfile(self._args.openscenario2):
+            print("File does not exist")
+            self._cleanup()
+            return False
+
+        config = OSC2ScenarioConfiguration(self._args.openscenario2, self.client)
+
+        result = self._load_and_run_scenario(config)
+        self._cleanup()
+
+        return result
 
     def run(self):
         """
         Run all scenarios according to provided commandline args
         """
         result = True
-
-        if self._args.route:
+        if self._args.openscenario:
+            result = self._run_openscenario()
+        elif self._args.route:
             result = self._run_route()
+        elif self._args.openscenario2:
+            result = self._run_osc2()
+        else:
+            result = self._run_scenarios()
 
         print("No more scenarios .... Exiting")
         return result
@@ -483,6 +569,9 @@ def main():
 
     parser.add_argument(
         '--scenario', help='Name of the scenario to be executed. Use the preposition \'group:\' to run all scenarios of one class, e.g. ControlLoss or FollowLeadingVehicle')
+    parser.add_argument('--openscenario', help='Provide an OpenSCENARIO definition')
+    parser.add_argument('--openscenarioparams', help='Overwrited for OpenSCENARIO ParameterDeclaration')
+    parser.add_argument('--openscenario2', help='Provide an openscenario2 definition')
     parser.add_argument('--route', help='Run a route as a scenario', type=str)
     parser.add_argument('--route-id', help='Run a specific route inside that \'route\' file', default='', type=str)
     parser.add_argument(
@@ -517,6 +606,23 @@ def main():
         print(*ScenarioConfigurationParser.get_list_of_scenarios(arguments.configFile), sep='\n')
         return 1
 
+    if not arguments.scenario and not arguments.openscenario and not arguments.route and not arguments.openscenario2:
+        print("Please specify either a scenario or use the route mode\n\n")
+        parser.print_help(sys.stdout)
+        return 1
+
+    if arguments.route and (arguments.openscenario or arguments.scenario):
+        print("The route mode cannot be used together with a scenario (incl. OpenSCENARIO)'\n\n")
+        parser.print_help(sys.stdout)
+        return 1
+
+    if arguments.agent and (arguments.openscenario or arguments.scenario):
+        print("Agents are currently only compatible with route scenarios'\n\n")
+        parser.print_help(sys.stdout)
+        return 1
+
+    if arguments.openscenarioparams and not arguments.openscenario:
+        print("WARN: Ignoring --openscenarioparams when --openscenario is not specified")
 
     if arguments.route:
         arguments.reloadWorld = True

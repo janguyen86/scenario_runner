@@ -187,8 +187,10 @@ class RouteScenario(BasicScenario):
     def get_all_scenario_classes(self):
 
         # Path of all scenario at "srunner/scenarios" folder
-        scenarios_list = glob.glob("{}/srunner/scenarios/*.py".format(os.getenv('SCENARIO_RUNNER_ROOT', "./")))
-
+        # scenarios_list = glob.glob("{}/srunner/scenarios/*.py".format(os.getenv('SCENARIO_RUNNER_ROOT', "./")))
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        scenarios_list = glob.glob("{}/*.py".format(dir_path))
+        
         all_scenario_classes = {}
 
         for scenario_file in scenarios_list:
