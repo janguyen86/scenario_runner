@@ -13,8 +13,8 @@ import xml.etree.ElementTree as ET
 
 import carla
 from agents.navigation.local_planner import RoadOption
-from srunner.scenarioconfigs.route_scenario_configuration import RouteScenarioConfiguration
-from srunner.scenarioconfigs.scenario_configuration import ScenarioConfiguration, ActorConfigurationData
+from srunner.scenarioconfigs.route_scenario_configuration_debug import RouteScenarioConfiguration
+from srunner.scenarioconfigs.scenario_configuration_debug import ScenarioConfiguration, ActorConfigurationData
 
 # Threshold to say if a scenarios trigger position is part of the route
 DIST_THRESHOLD = 2.0
@@ -51,47 +51,44 @@ class RouteParser(object):
         :param single_route: If set, only this route shall be returned
         :return: List of dicts containing the waypoints, id and town of the routes
         """
-
-        route_configs = []
         tree = ET.parse(route_filename)
-        for route in tree.iter("route"):
+        scenario_configs = []
+        route_configs = []
+        for scenario in tree.iter("scenario"): 
+            scenario_config = ScenarioConfiguration()
+            scenario_config.name = scenario.attrib.get('name')
+            scenario_config.type = scenario.attrib.get('type')
+            for elem in scenario.iter():
+                if elem.tag == 'trigger_point':
+                    scenario_config.trigger_points.append(convert_elem_to_transform(elem))
+                elif elem.tag == 'other_actor':
+                    scenario_config.other_actors.append(ActorConfigurationData.parse_from_node(elem, 'scenario'))
+                else:
+                    scenario_config.other_parameters[elem.tag] = elem.attrib
+            scenario_configs.append(scenario_config)
+            
+            # tree = ET.parse(route_filename)
+            for route in scenario.find("routes").iter("route"):
 
-            route_id = route.attrib['id']
-            if single_route_id and route_id != single_route_id:
-                continue
+                route_id = route.attrib['id']
+                if single_route_id and route_id != single_route_id:
+                    continue
 
-            route_config = RouteScenarioConfiguration()
-            route_config.town = route.attrib['town']
-            route_config.name = "RouteScenario_{}".format(route_id)
-            route_config.weather = RouteParser.parse_weather(route)
+                route_config = RouteScenarioConfiguration()
+                route_config.town = route.attrib['town']
+                route_config.name = "RouteScenario_{}".format(route_id)
+                route_config.weather = RouteParser.parse_weather(route)
 
-            # The list of carla.Location that serve as keypoints on this route
-            positions = []
-            for position in route.find('waypoints').iter('position'):
-                positions.append(carla.Location(x=float(position.attrib['x']),
-                                                y=float(position.attrib['y']),
-                                                z=float(position.attrib['z'])))
-            route_config.keypoints = positions
+                # The list of carla.Location that serve as keypoints on this route
+                positions = []
+                for position in route.find('waypoints').iter('position'):
+                    positions.append(carla.Location(x=float(position.attrib['x']),
+                                                    y=float(position.attrib['y']),
+                                                    z=float(position.attrib['z'])))
+                route_config.keypoints = positions
+                route_config.scenario_configs = scenario_configs
 
-            # The list of ScenarioConfigurations that store the scenario's data
-            scenario_configs = []
-            for scenario in route.find('scenarios').iter('scenario'):
-                scenario_config = ScenarioConfiguration()
-                scenario_config.name = scenario.attrib.get('name')
-                scenario_config.type = scenario.attrib.get('type')
-
-                for elem in scenario.iter():
-                    if elem.tag == 'trigger_point':
-                        scenario_config.trigger_points.append(convert_elem_to_transform(elem))
-                    elif elem.tag == 'other_actor':
-                        scenario_config.other_actors.append(ActorConfigurationData.parse_from_node(elem, 'scenario'))
-                    else:
-                        scenario_config.other_parameters[elem.tag] = elem.attrib
-
-                scenario_configs.append(scenario_config)
-            route_config.scenario_configs = scenario_configs
-
-            route_configs.append(route_config)
+                route_configs.append(route_config)
 
         return route_configs
 

@@ -18,7 +18,7 @@ sudo docker run --privileged --gpus all --net=host -e DISPLAY=$DISPLAY carlasim/
 
 ## Run Route Scenario 
 
-### Example Route Scenario 
+### Example Original Route Scenario 
 Run route scenario
 ```commandline 
 python scenario_runner.py --route /home/janice/scenario_runner/srunner/data/routes_town10.xml --route-id 0 --agent srunner/autoagents/npc_agent.py
@@ -34,18 +34,7 @@ Debug mode
 --route /home/janice/scenario_runner/srunner/data/routes_town10.xml --route-id 0 --agent srunner/autoagents/npc_agent.py
 ```
 
-### Single Sensor Agent 
-Run route scenario
-```commandline 
-python scenario_runner.py --route /home/janice/scenario_runner/srunner/data/routes_town10.xml --route-id 0 --agent srunner/autoagents/human_agent.py
-```
-
-Start manual control agent 
-```commandline 
-python3 manual_control.py 
-```
-
-### Multiple Sensor Agent 
+### Multiple Agent 
 Run route scenario
 ```commandline 
 python scenario_runner.py --route /home/janice/scenario_runner/srunner/data/routes_town10.xml --route-id 0 --agent srunner/autoagents/npc_agent.py
@@ -96,7 +85,7 @@ python3 manual_control.py
 
 Run route scenario
 ```commandline 
-python scenario_runner_debug.py --route /home/janice/scenario_runner/srunner/examples/AgentSensor.xml
+python scenario_runner_debug.py --route /home/janice/scenario_runner/srunner/examples/AgentSensorDebug.xml --agent srunner/autoagents/human_agent.py
 ```
 
 ## Multi_agent Type Scenario Runner 
@@ -113,19 +102,3 @@ python3 manual_control.py --rolename hero
 ```commandline 
 python3 manual_control.py --rolename hero2
 ```
-
-# New Files added 
-
-/srunner/autoagents/agent_sensor.py 
-
-/srunner/examples/agent_sensor.xml (incomplete)
-
-/scenariomanager/scenario_manager_local.py 
-
-/scenario_runner_local.py 
-
-/sruuner/scenarios/route_scenario_local.py 
-
-/srunner/tools/route_parser_local.py
-
-/srunner/scenarioconfigs/route_scenario_configuration_local.py
